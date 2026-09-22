@@ -1,0 +1,2 @@
+transformers==5.17.0
+torch==2.14.0
