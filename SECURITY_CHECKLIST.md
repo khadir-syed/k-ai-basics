@@ -9,7 +9,7 @@ must pass all four before it goes in:
 - [x] **Documentation is up to date, along with required diagrams** — the relevant README(s) describe what the code does right now (not a planned future state), and any Mermaid diagram still matches the real flow.
 
 ## Secrets & Credentials
-- [x] No API keys, tokens, or passwords committed (`gitleaks`/`git-secrets` not installed locally — ran an equivalent manual scan of the commit diff for key/token patterns; only match was the placeholder `your-key-here` in the README)
+- [x] No API keys, tokens, or passwords committed (`gitleaks`/`git-secrets` not installed locally — ran an equivalent manual scan of the commit diff for key/token patterns each time; only match found was the placeholder `your-key-here` in READMEs)
 - [x] No hardcoded cloud account IDs, internal hostnames, or employer-identifying data
 - [x] `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` are only ever read from environment variables, never written to a file or printed
 
