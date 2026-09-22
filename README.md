@@ -23,16 +23,20 @@ clearly.
 | 01 | [Tokenizer Playground](01-tokenizer-playground/) | AI doesn't read words — it reads small pieces called tokens, and guesses one at a time | `python run.py "your sentence"` | No |
 | 02 | [Mini-RAG in a Terminal](02-mini-rag/) | How AI "looks things up" in documents before it answers | `python ask.py "your question"` | No (optional) |
 | 03 | [Agent Trace CLI](03-agent-trace/) | What an "agent" actually does, step by step: think → use a tool → answer | `python trace.py "your task"` | No (optional) |
+| 04 | [Router Playground](04-router-playground/) | How AI decides which tool/skill to use for a request | `python router.py "your request"` | No (optional) |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03**. Each one builds on the idea before
-it:
+Run them **in order: 01 → 02 → 03 → 04**. Each one builds on the idea
+before it:
 
 1. **01** shows you the smallest building block — a token.
 2. **02** shows AI using a pile of tokens (documents) to find an answer.
 3. **03** shows AI deciding *when* to go look something up versus just
    answering — the first taste of "agent" behavior.
+4. **04** pulls that decision step out on its own, scoring several
+   possible skills side by side — the first taste of a full multi-agent
+   system, where the hard part is picking the *right* specialist.
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
@@ -40,6 +44,7 @@ Skipping ahead works fine too, but the ideas click faster in this order.
 flowchart LR
     A["01: Tokens\n(the building blocks)"] --> B["02: Retrieval\n(looking things up)"]
     B --> C["03: Agent trace\n(deciding + acting)"]
+    C --> D["04: Router\n(picking the right skill)"]
 ```
 
 ## How to install and run a demo
@@ -65,10 +70,14 @@ works.
 
 ## Where to go next
 
-Once you've run all three and want to see what the "real," full-power
+Once you've run all four and want to see what the "real," full-power
 version of these ideas looks like — the actual skills, agents, and
-orchestration layers this repo simplifies — head to the tech-version
-repos in the `k-` series. Links to all of them: **https://khadir-syed.github.io/**
+orchestration layers this repo simplifies — **04's router is the bridge**:
+it's a simplified mirror of the `request-router-agent` in
+[`k_ai-agent-skills`](https://github.com/khadir-syed/k_ai-agent-skills),
+which routes real work to real agents with human checkpoints. From there,
+head to the tech-version repos in the `k-` series. Links to all of them:
+**https://khadir-syed.github.io/**
 
 ## License
 
