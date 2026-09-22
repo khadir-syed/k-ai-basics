@@ -22,7 +22,7 @@ clearly.
 |---|------|--------------------|--------------|--------------------|
 | 01 | [Tokenizer Playground](01-tokenizer-playground/) | AI doesn't read words — it reads small pieces called tokens, and guesses one at a time | `python run.py "your sentence"` | No |
 | 02 | [Mini-RAG in a Terminal](02-mini-rag/) | How AI "looks things up" in documents before it answers | `python ask.py "your question"` | No (optional) |
-| 03 | Agent Trace CLI *(coming soon)* | What an "agent" actually does, step by step: think → use a tool → answer | `python trace.py "your task"` | No (optional) |
+| 03 | [Agent Trace CLI](03-agent-trace/) | What an "agent" actually does, step by step: think → use a tool → answer | `python trace.py "your task"` | No (optional) |
 
 ## Which one should I run first?
 
