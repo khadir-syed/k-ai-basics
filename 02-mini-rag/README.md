@@ -157,3 +157,33 @@ the AI company's computer and brings the answer back. It's only used when
 you add `--key` — without `--key`, it just sits there doing nothing. The
 same messenger file lives in every demo that has a `--key` mode, so each
 folder still works on its own.
+
+**Using a different AI service (optional).** Think of `llm.py` as a
+messenger who normally goes to one of two post offices: Anthropic's or
+OpenAI's. Lots of other AI services use the same "OpenAI-style" language, so
+you can give the messenger a different address and a different model name
+instead. For example, to use an AI gateway running on your own computer:
+
+```bash
+export OPENAI_API_KEY="your-key-for-that-service"
+export OPENAI_BASE_URL="http://localhost:20128/v1"
+export LLM_MODEL="the-model-name-that-service-uses"
+```
+
+The three settings:
+
+| Setting | What it does | If you don't set it |
+|---|---|---|
+| `LLM_MODEL` | Which model to ask | Uses the model named in `llm.py` |
+| `OPENAI_BASE_URL` | Where OpenAI-style questions go | `https://api.openai.com/v1` |
+| `ANTHROPIC_BASE_URL` | Where Anthropic-style questions go | `https://api.anthropic.com` |
+
+Two things to know:
+- If `ANTHROPIC_API_KEY` is set, it always wins — the messenger goes to the
+  Anthropic-style address and ignores `OPENAI_BASE_URL`. Run
+  `unset ANTHROPIC_API_KEY` first if you want the OpenAI-style service.
+- Some models "think" before answering. If one uses up all its room
+  thinking, the answer can come back empty — try a different model.
+
+(Tested on 23 September 2026 with the `groq/openai/gpt-oss-20b` model
+through a local OmniRoute gateway.)

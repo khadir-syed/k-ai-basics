@@ -12,6 +12,12 @@ import urllib.request
 ANTHROPIC_MODEL = "claude-haiku-4-5"
 OPENAI_MODEL = "gpt-4o-mini"
 
+# Optional environment variables, all off by default:
+#   LLM_MODEL           use this model name instead of the two above
+#   ANTHROPIC_BASE_URL  send Anthropic-style calls here (default https://api.anthropic.com)
+#   OPENAI_BASE_URL     send OpenAI-style calls here, e.g. a local AI gateway
+#                       (default https://api.openai.com/v1)
+
 
 def has_key():
     """True if ANTHROPIC_API_KEY or OPENAI_API_KEY is set."""
@@ -19,6 +25,9 @@ def has_key():
 
 
 def _post_json(url, headers, payload):
+    # Name ourselves: some services behind Cloudflare (e.g. Groq) block
+    # Python's default "Python-urllib" User-Agent with a 403.
+    headers = {**headers, "User-Agent": "k-ai-basics-demo"}
     req = urllib.request.Request(
         url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST"
     )
@@ -33,21 +42,26 @@ def ask(prompt, max_tokens=300):
     Raises urllib.error.URLError if the call fails (no internet, bad key, ...).
     """
     messages = [{"role": "user", "content": prompt}]
+    model = os.environ.get("LLM_MODEL")
 
     key = os.environ.get("ANTHROPIC_API_KEY")
     if key:
+        base = os.environ.get("ANTHROPIC_BASE_URL") or "https://api.anthropic.com"
         data = _post_json(
-            "https://api.anthropic.com/v1/messages",
+            base.rstrip("/") + "/v1/messages",
             {"x-api-key": key, "anthropic-version": "2023-06-01",
              "content-type": "application/json"},
-            {"model": ANTHROPIC_MODEL, "max_tokens": max_tokens, "messages": messages},
+            {"model": model or ANTHROPIC_MODEL, "max_tokens": max_tokens,
+             "messages": messages},
         )
         return " ".join(b["text"] for b in data["content"] if b["type"] == "text").strip()
 
+    base = os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1"
     data = _post_json(
-        "https://api.openai.com/v1/chat/completions",
+        base.rstrip("/") + "/chat/completions",
         {"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
          "content-type": "application/json"},
-        {"model": OPENAI_MODEL, "max_tokens": max_tokens, "messages": messages},
+        {"model": model or OPENAI_MODEL, "max_tokens": max_tokens, "messages": messages},
     )
-    return data["choices"][0]["message"]["content"].strip()
+    # "or ''": some thinking models return no text if they run out of room.
+    return (data["choices"][0]["message"]["content"] or "").strip()
