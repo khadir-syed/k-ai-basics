@@ -43,10 +43,11 @@ clearly.
 | 02 | [Mini-RAG in a Terminal](02-mini-rag/) | How AI "looks things up" in documents before it answers | `python ask.py "your question"` | No (optional) |
 | 03 | [Agent Trace CLI](03-agent-trace/) | What an "agent" actually does, step by step: think → use a tool → answer | `python trace.py "your task"` | No (optional) |
 | 04 | [Router Playground](04-router-playground/) | How AI decides which tool/skill to use for a request | `python router.py "your request"` | No (optional) |
+| 05 | [Context Window Explorer](05-context-window/) | Why AI "forgets" the start of a long chat — it only has room for so many tokens | `python explore.py` | No |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03 → 04**. Each one builds on the idea
+Run them **in order: 01 → 02 → 03 → 04 → 05**. Each one builds on the idea
 before it:
 
 1. **01** shows you the smallest building block — a token.
@@ -56,6 +57,8 @@ before it:
 4. **04** pulls that decision step out on its own, scoring several
    possible skills side by side — the first taste of a full multi-agent
    system, where the hard part is picking the *right* specialist.
+5. **05** goes back to 01's tokens and shows why they matter in a chat:
+   the AI can only hold so many at once, so the oldest messages fall off.
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
@@ -64,6 +67,8 @@ flowchart LR
     A["01: Tokens\n(the building blocks)"] --> B["02: Retrieval\n(looking things up)"]
     B --> C["03: Agent trace\n(deciding + acting)"]
     C --> D["04: Router\n(picking the right skill)"]
+    D --> E["05: Context window\n(why AI forgets)"]
+    A -.->|"same tokens"| E
 ```
 
 ## How to install and run a demo
@@ -89,7 +94,7 @@ works.
 
 ## Where to go next
 
-Once you've run all four and want to see what the "real," full-power
+Once you've run them all and want to see what the "real," full-power
 version of these ideas looks like — the actual skills, agents, and
 orchestration layers this repo simplifies — **04's router is the bridge**:
 it's a simplified mirror of the `request-router-agent` in
