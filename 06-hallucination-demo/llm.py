@@ -24,6 +24,13 @@ def has_key():
     return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"))
 
 
+def current_model():
+    """The model name ask() will use right now."""
+    if os.environ.get("LLM_MODEL"):
+        return os.environ["LLM_MODEL"]
+    return ANTHROPIC_MODEL if os.environ.get("ANTHROPIC_API_KEY") else OPENAI_MODEL
+
+
 def _post_json(url, headers, payload):
     # Name ourselves: some services behind Cloudflare (e.g. Groq) block
     # Python's default "Python-urllib" User-Agent with a 403.
@@ -42,7 +49,7 @@ def ask(prompt, max_tokens=300):
     Raises urllib.error.URLError if the call fails (no internet, bad key, ...).
     """
     messages = [{"role": "user", "content": prompt}]
-    model = os.environ.get("LLM_MODEL")
+    model = current_model()
 
     key = os.environ.get("ANTHROPIC_API_KEY")
     if key:
@@ -51,8 +58,7 @@ def ask(prompt, max_tokens=300):
             base.rstrip("/") + "/v1/messages",
             {"x-api-key": key, "anthropic-version": "2023-06-01",
              "content-type": "application/json"},
-            {"model": model or ANTHROPIC_MODEL, "max_tokens": max_tokens,
-             "messages": messages},
+            {"model": model, "max_tokens": max_tokens, "messages": messages},
         )
         return " ".join(b["text"] for b in data["content"] if b["type"] == "text").strip()
 
@@ -61,7 +67,7 @@ def ask(prompt, max_tokens=300):
         base.rstrip("/") + "/chat/completions",
         {"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
          "content-type": "application/json"},
-        {"model": model or OPENAI_MODEL, "max_tokens": max_tokens, "messages": messages},
+        {"model": model, "max_tokens": max_tokens, "messages": messages},
     )
     # "or ''": some thinking models return no text if they run out of room.
     return (data["choices"][0]["message"]["content"] or "").strip()

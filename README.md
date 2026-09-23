@@ -45,10 +45,11 @@ clearly.
 | 04 | [Router Playground](04-router-playground/) | How AI decides which tool/skill to use for a request | `python router.py "your request"` | No (optional) |
 | 05 | [Context Window Explorer](05-context-window/) | Why AI "forgets" the start of a long chat — it only has room for so many tokens | `python explore.py` | No |
 | 06 | [Hallucination Demo](06-hallucination-demo/) | Why looking things up matters — without documents, AI can only guess, and a guess can sound sure | `python compare.py "your question"` | No (optional — best with one) |
+| 07 | [Prompt Engineering Playground](07-prompt-playground/) | Small wording changes to a prompt change the answer a lot — see real before/after answers, and check your own prompt | `python playground.py` | No (optional) |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03 → 04 → 05 → 06**. Each one builds on the idea
+Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07**. Each one builds on the idea
 before it:
 
 1. **01** shows you the smallest building block — a token.
@@ -62,6 +63,8 @@ before it:
    the AI can only hold so many at once, so the oldest messages fall off.
 6. **06** goes back to 02's "look it up first" and shows why it matters:
    the same question, answered with no documents (a guess) and with them.
+7. **07** is the finishing skill: now that you know how AI works, learn to
+   *ask* it well. It stands on its own, so you can also try it any time.
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
@@ -74,6 +77,7 @@ flowchart LR
     A -.->|"same tokens"| E
     E --> F["06: Hallucination\n(guessing vs looking up)"]
     B -.->|"same search"| F
+    F --> G["07: Prompt playground\n(asking it well)"]
 ```
 
 ## How to install and run a demo

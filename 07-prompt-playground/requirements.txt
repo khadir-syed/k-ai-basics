@@ -1,0 +1,2 @@
+# No third-party packages needed. This demo only uses Python's standard
+# library (re, json, textwrap, urllib, argparse) — nothing to install.
