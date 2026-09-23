@@ -69,6 +69,32 @@ python trace.py "tell me a joke"
 - `[TOOL RESULT]` — what the tool handed back
 - `[FINAL ANSWER]` — what the agent tells you
 
+> 📅 **Example output, as of 23 September 2026.** This is a real run, copied
+> here so you can see what to expect. If the demo changes later, your output
+> may look a little different — that's okay.
+
+```
+$ python trace.py "what is 12 times 4"
+📄 Rule-based mode — a regex decides which tool to use:
+
+[THINKING] Checking whether this needs a tool...
+[TOOL CALL] calculator("12 * 4")
+[TOOL RESULT] 48
+[FINAL ANSWER] 12 * 4 = 48
+
+$ python trace.py "tell me a joke"
+📄 Rule-based mode — a regex decides which tool to use:
+
+[THINKING] Checking whether this needs a tool...
+[THINKING] No tool matches — not math, not one of my trivia topics.
+[FINAL ANSWER] I can only do math (e.g. "12 * 4") or answer a handful of trivia questions. Try one of those!
+```
+
+**What am I looking at?** In the first one, the agent saw numbers and the
+word "times", so it grabbed its calculator, typed in `12 * 4`, got `48`
+back, and told you. In the second one, it looked at its toolbox, saw
+nothing that tells jokes, and said so honestly — no tool, no pretending.
+
 ## How the agent decides, by default
 
 Out of the box, this demo uses a simple **rule**, not real thinking: if

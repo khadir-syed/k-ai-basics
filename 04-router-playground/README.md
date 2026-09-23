@@ -65,7 +65,9 @@ python router.py "what's the weather today"
 - `[ROUTED TO]` / `[WHY]` — the winner and why, or `[NO CONFIDENT MATCH]`
   if nothing scored high enough
 
-Example output:
+> 📅 **Example output, as of 23 September 2026.** This is a real run, copied
+> here so you can see what to expect. If the demo changes later, your output
+> may look a little different — that's okay.
 
 ```
 [REQUEST]  "fix the bug where login fails silently"
@@ -75,7 +77,19 @@ Example output:
 [ROUTED TO] bug-fixer
 [WHY] Highest keyword overlap with this skill's trigger terms.
 📋 Rule-based
+
+[REQUEST]  "what's the weather today"
+[CHECKING] bug-fixer             -> score: 0.00
+[CHECKING] writer                -> score: 0.00
+[CHECKING] release-notes-helper  -> score: 0.00
+[NO CONFIDENT MATCH] No skill scored above the threshold (0.2) — a real router would ask a human instead of guessing.
 ```
+
+**What am I looking at?** For the first request, the router checked all 3
+helpers. `bug-fixer` found 3 of its magic words ("bug", "fails", "fix"),
+the others found none — so `bug-fixer` gets the job. For the weather
+question, *nobody* found a magic word, so instead of picking someone at
+random, it says "I'm not sure — let's ask a person."
 
 ## The 3 mock skills
 

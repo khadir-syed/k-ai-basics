@@ -65,6 +65,33 @@ You'll see a bar chart of the 5 paragraphs that matched your question best
 — which story they came from and how confident the match is — followed by
 the single best paragraph shown as the answer.
 
+> 📅 **Example output, as of 23 September 2026.** This is a real run, copied
+> here so you can see what to expect. If the demo changes later, your output
+> may look a little different — that's okay.
+
+```
+Top 5 story paragraphs that best match your question:
+
+three_little_pigs.txt    #########             44.9%
+    The wolf huffed and puffed with all his might, but the brick house ...
+three_little_pigs.txt    ########              39.0%
+    One day a hungry wolf came prowling through the woods and found the...
+...  (3 more rows)
+
+📄 Retrieval-only mode — showing the best-matching paragraph as the answer:
+
+The wolf huffed and puffed with all his might, but the brick house did not
+budge. No matter how hard he tried, the wolf could not blow the sturdy brick
+house down, and the three pigs stayed safe inside.
+```
+
+**What am I looking at?** It flipped through every paragraph and gave each
+one a score — more `#` means more matching words. The pigs story won, which
+is right. But look closely: you asked about the **straw** house, and it
+picked the **brick** house paragraph! That's because "wolf", "blow" and
+"house" show up there a lot. It matches *words*, not *meaning* — see the
+next section.
+
 **6. Try your own questions.**
 The 4 stories are: *The Tortoise and the Hare*, *The Three Little Pigs*,
 *The Boy Who Cried Wolf*, and *The Ant and the Grasshopper*. Ask about any
@@ -93,6 +120,14 @@ If you ask about something that isn't in any story — like "tax rules for
 crypto" — not a single word lines up. The demo then tells you "nothing to
 answer from" instead of pretending. That's the honest thing to do: if you
 can't find it in the books, you say "I don't know," you don't make it up.
+
+> 📅 Example output, as of 23 September 2026.
+
+```
+$ python ask.py "tax rules for crypto"
+
+🤷 None of the stories share any words with your question, so there's nothing to answer from. Try asking about one of the stories.
+```
 
 ## Optional: real generated answers with an API key
 

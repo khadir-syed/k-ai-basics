@@ -5,6 +5,25 @@
 [![Links: K THE TECHMAN](https://img.shields.io/badge/K_THE_TECHMAN-All_links-000000?style=flat-square)](https://khadir-syed.github.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
+## See it in 5 seconds
+
+This is what it looks like when you ask Demo 03 a question. You get to
+watch the AI **think**, **pick a tool**, **use it**, and **answer** — step
+by step, nothing hidden:
+
+```
+$ python trace.py "what is 12 times 4"
+📄 Rule-based mode — a regex decides which tool to use:
+
+[THINKING] Checking whether this needs a tool...
+[TOOL CALL] calculator("12 * 4")
+[TOOL RESULT] 48
+[FINAL ANSWER] 12 * 4 = 48
+```
+
+> 📅 Example output, as of 23 September 2026. Every demo's README shows its
+> own example output like this, so you know what to expect before you run it.
+
 ## What this is (and isn't)
 
 This is for someone who is still trying to get a clue of what "AI" even

@@ -87,6 +87,37 @@ You'll see two things:
 2. A bar chart — the computer's top 5 guesses for what token comes next,
    like a guessing game, with how confident it is about each guess.
 
+> 📅 **Example output, as of 23 September 2026.** This is a real run, copied
+> here so you can see what to expect. If the demo changes later, your output
+> may look a little different — that's okay.
+
+```
+Your sentence, split into tokens:
+
+  #  TOKEN                      ID
+----------------------------------
+  0  The                       464
+  1   cat                     3797
+  2   sat                     3332
+  3   on                       319
+  4   the                      262
+
+Top 5 guesses for the next token:
+
+floor           ##   7.6%
+bed             ##   6.5%
+couch           ##   5.4%
+ground          ##   5.2%
+edge            #   4.8%
+```
+
+**What am I looking at?** The computer cut "The cat sat on the" into 5
+Lego bricks. See the little space before `cat`? The space is *part of* the
+brick. Each brick has a number — that number is the only thing the
+computer really sees. Then it guessed the next brick: "floor" is its
+favourite, but only 7.6% sure. It's not *knowing* — it's guessing, just
+like you would.
+
 **9. (Optional) Try your own sentence.**
 Run step 6 again with a different sentence in the quotes and watch the
 guesses change.
