@@ -1,4 +1,4 @@
-# k-ai-basics
+# k_ai-basics
 
 > Clone it, run one command, and watch how AI actually works — right in your terminal. No sign-ups, no cloud, no credit card.
 

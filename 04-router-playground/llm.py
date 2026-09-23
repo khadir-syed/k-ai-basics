@@ -34,7 +34,7 @@ def current_model():
 def _post_json(url, headers, payload):
     # Name ourselves: some services behind Cloudflare (e.g. Groq) block
     # Python's default "Python-urllib" User-Agent with a 403.
-    headers = {**headers, "User-Agent": "k-ai-basics-demo"}
+    headers = {**headers, "User-Agent": "k_ai-basics-demo"}
     req = urllib.request.Request(
         url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST"
     )
