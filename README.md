@@ -44,10 +44,11 @@ clearly.
 | 03 | [Agent Trace CLI](03-agent-trace/) | What an "agent" actually does, step by step: think → use a tool → answer | `python trace.py "your task"` | No (optional) |
 | 04 | [Router Playground](04-router-playground/) | How AI decides which tool/skill to use for a request | `python router.py "your request"` | No (optional) |
 | 05 | [Context Window Explorer](05-context-window/) | Why AI "forgets" the start of a long chat — it only has room for so many tokens | `python explore.py` | No |
+| 06 | [Hallucination Demo](06-hallucination-demo/) | Why looking things up matters — without documents, AI can only guess, and a guess can sound sure | `python compare.py "your question"` | No (optional — best with one) |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03 → 04 → 05**. Each one builds on the idea
+Run them **in order: 01 → 02 → 03 → 04 → 05 → 06**. Each one builds on the idea
 before it:
 
 1. **01** shows you the smallest building block — a token.
@@ -59,6 +60,8 @@ before it:
    system, where the hard part is picking the *right* specialist.
 5. **05** goes back to 01's tokens and shows why they matter in a chat:
    the AI can only hold so many at once, so the oldest messages fall off.
+6. **06** goes back to 02's "look it up first" and shows why it matters:
+   the same question, answered with no documents (a guess) and with them.
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
@@ -69,6 +72,8 @@ flowchart LR
     C --> D["04: Router\n(picking the right skill)"]
     D --> E["05: Context window\n(why AI forgets)"]
     A -.->|"same tokens"| E
+    E --> F["06: Hallucination\n(guessing vs looking up)"]
+    B -.->|"same search"| F
 ```
 
 ## How to install and run a demo
