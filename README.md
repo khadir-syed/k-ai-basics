@@ -92,6 +92,14 @@ Each demo folder is self-contained — its own `requirements.txt`, its own
 README, nothing shared. Copy just that one folder anywhere and it still
 works.
 
+Demos with an optional `--key` mode each carry their own copy of the same
+small file, `llm.py`, which does the talking to the AI company. The copies
+are kept identical, and you can check that anytime from this folder:
+
+```bash
+python3 check_llm_copies.py
+```
+
 ## Where to go next
 
 Once you've run them all and want to see what the "real," full-power

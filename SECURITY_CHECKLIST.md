@@ -4,7 +4,7 @@ Run through this before every commit pushed to this repo. Every commit
 must pass all four before it goes in:
 
 - [x] **Security all good?** — see [Secrets & Credentials](#secrets--credentials) and [Dependencies](#dependencies) below.
-- [x] **Code standard wise all good?** — matches this repo's style (hand-rolled logic, no unneeded dependencies or frameworks, small self-contained demo folders), and runs without errors.
+- [x] **Code standard wise all good?** — matches this repo's style (hand-rolled logic, no unneeded dependencies or frameworks, small self-contained demo folders), and runs without errors. If any `llm.py` changed, `python check_llm_copies.py` passes.
 - [x] **No other tech issues?** — tested end-to-end by actually running the demo, not just reading the code.
 - [x] **Documentation is up to date, along with required diagrams** — the relevant README(s) describe what the code does right now (not a planned future state), and any Mermaid diagram still matches the real flow.
 

@@ -27,7 +27,8 @@ have it still work.
 ├── README.md
 ├── requirements.txt
 ├── <entry-point>.py
-└── test_<entry-point>.py
+├── test_<entry-point>.py
+└── llm.py              (only if the demo has a --key mode — see rule 1)
 ```
 
 A new demo should:
@@ -36,6 +37,10 @@ A new demo should:
    benefits from a real LLM call, gate that behind an explicit `--key` flag
    that reads `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` from an environment
    variable only — never a file, never printed, never hardcoded.
+   For a simple "send a prompt, get text back" call, copy `llm.py` from
+   an existing demo (e.g. `02-mini-rag/llm.py`) into your folder, unchanged.
+   Every demo keeps its own copy so the folder still works on its own, and
+   `python check_llm_copies.py` (repo root) fails if the copies ever differ.
 2. **Avoid heavyweight frameworks.** Prefer the standard library or one or
    two small, well-known packages (e.g. `transformers`, `scikit-learn`)
    over agent/orchestration frameworks. The point is to show the mechanism,
@@ -91,6 +96,8 @@ commit in this repo is expected to pass:
       high/critical findings.
 - [ ] The demo runs end-to-end without errors, and its `test_*.py`
       self-check passes.
+- [ ] If any `llm.py` was touched, `python check_llm_copies.py` passes
+      (every copy identical).
 - [ ] The demo's README (and any diagram) matches exactly what the code
       does right now — no describing an unbuilt feature without saying so.
 - [ ] Root [README.md](README.md) demo table updated if a demo was added,

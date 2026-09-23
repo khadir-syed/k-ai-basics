@@ -6,11 +6,10 @@ can compare rule-based vs LLM-based routing on the same input.
 """
 
 import argparse
-import json
-import os
 import re
 import urllib.error
-import urllib.request
+
+import llm
 
 # Each skill is trigger keywords + a one-line description. Score for a given
 # request = (keywords found in the request) / (total keywords for that skill).
@@ -33,10 +32,6 @@ SKILLS = [
 ]
 
 THRESHOLD = 0.2
-
-# Models used by --key mode. Swap in a newer model name here if you like.
-ANTHROPIC_MODEL = "claude-haiku-4-5"
-OPENAI_MODEL = "gpt-4o-mini"
 
 _WORD_RE = re.compile(r"[a-z0-9']+")
 
@@ -81,13 +76,6 @@ def run_rule_based(request):
     print("📋 Rule-based")
 
 
-def _post_json(url, headers, payload):
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.loads(resp.read().decode("utf-8"))
-
-
 def _skills_prompt(request):
     skill_lines = "\n".join(f"- {s['name']}: {s['description']}" for s in SKILLS)
     return (
@@ -99,44 +87,14 @@ def _skills_prompt(request):
     )
 
 
-def _call_anthropic(request):
-    key = os.environ["ANTHROPIC_API_KEY"]
-    payload = {
-        "model": ANTHROPIC_MODEL,
-        "max_tokens": 200,
-        "messages": [{"role": "user", "content": _skills_prompt(request)}],
-    }
-    headers = {
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-    }
-    result = _post_json("https://api.anthropic.com/v1/messages", headers, payload)
-    return result["content"][0]["text"]
-
-
-def _call_openai(request):
-    key = os.environ["OPENAI_API_KEY"]
-    payload = {
-        "model": OPENAI_MODEL,
-        "messages": [{"role": "user", "content": _skills_prompt(request)}],
-    }
-    headers = {"Authorization": f"Bearer {key}", "content-type": "application/json"}
-    result = _post_json("https://api.openai.com/v1/chat/completions", headers, payload)
-    return result["choices"][0]["message"]["content"]
-
-
 def run_with_llm(request):
     print(f'[REQUEST]  "{request}"')
-    if not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY")):
+    if not llm.has_key():
         print("[ERROR] --key was passed but no ANTHROPIC_API_KEY or "
               "OPENAI_API_KEY is set in the environment.")
         return
     try:
-        if os.environ.get("ANTHROPIC_API_KEY"):
-            reply = _call_anthropic(request)
-        else:
-            reply = _call_openai(request)
+        reply = llm.ask(_skills_prompt(request), max_tokens=200)
     except urllib.error.URLError as exc:
         print(f"[ERROR] The live API call failed (check your key and internet): {exc}")
         return

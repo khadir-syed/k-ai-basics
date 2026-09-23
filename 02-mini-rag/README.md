@@ -148,6 +148,12 @@ an internet call and **never** needs a key at all.
 **Which AI model does it use?** Right now it uses `claude-haiku-4-5`
 (Anthropic) or `gpt-4o-mini` (OpenAI) — small, fast, cheap models. AI
 companies bring out new models all the time, like new versions of a toy. If
-you want to try a newer one, open [`ask.py`](ask.py), find the two lines
+you want to try a newer one, open [`llm.py`](llm.py), find the two lines
 near the top that start with `ANTHROPIC_MODEL` and `OPENAI_MODEL`, and put
 the new model's name between the quotes.
+
+**What's `llm.py`?** It's the little messenger that carries your question to
+the AI company's computer and brings the answer back. It's only used when
+you add `--key` — without `--key`, it just sits there doing nothing. The
+same messenger file lives in every demo that has a `--key` mode, so each
+folder still works on its own.
