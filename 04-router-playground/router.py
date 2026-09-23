@@ -9,6 +9,7 @@ import argparse
 import json
 import os
 import re
+import urllib.error
 import urllib.request
 
 # Each skill is trigger keywords + a one-line description. Score for a given
@@ -32,6 +33,10 @@ SKILLS = [
 ]
 
 THRESHOLD = 0.2
+
+# Models used by --key mode. Swap in a newer model name here if you like.
+ANTHROPIC_MODEL = "claude-haiku-4-5"
+OPENAI_MODEL = "gpt-4o-mini"
 
 _WORD_RE = re.compile(r"[a-z0-9']+")
 
@@ -97,7 +102,7 @@ def _skills_prompt(request):
 def _call_anthropic(request):
     key = os.environ["ANTHROPIC_API_KEY"]
     payload = {
-        "model": "claude-3-5-haiku-latest",
+        "model": ANTHROPIC_MODEL,
         "max_tokens": 200,
         "messages": [{"role": "user", "content": _skills_prompt(request)}],
     }
@@ -113,7 +118,7 @@ def _call_anthropic(request):
 def _call_openai(request):
     key = os.environ["OPENAI_API_KEY"]
     payload = {
-        "model": "gpt-4o-mini",
+        "model": OPENAI_MODEL,
         "messages": [{"role": "user", "content": _skills_prompt(request)}],
     }
     headers = {"Authorization": f"Bearer {key}", "content-type": "application/json"}
@@ -123,13 +128,17 @@ def _call_openai(request):
 
 def run_with_llm(request):
     print(f'[REQUEST]  "{request}"')
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        reply = _call_anthropic(request)
-    elif os.environ.get("OPENAI_API_KEY"):
-        reply = _call_openai(request)
-    else:
+    if not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY")):
         print("[ERROR] --key was passed but no ANTHROPIC_API_KEY or "
               "OPENAI_API_KEY is set in the environment.")
+        return
+    try:
+        if os.environ.get("ANTHROPIC_API_KEY"):
+            reply = _call_anthropic(request)
+        else:
+            reply = _call_openai(request)
+    except urllib.error.URLError as exc:
+        print(f"[ERROR] The live API call failed (check your key and internet): {exc}")
         return
     for line in reply.strip().splitlines():
         if line.startswith("ROUTED TO:"):

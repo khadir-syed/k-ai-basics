@@ -9,6 +9,8 @@ assert extract_expression("7 plus 5") == "7 + 5"
 assert extract_expression("hello there") is None
 assert calculator("12 * 4") == 48
 assert calculator("7 + 5") == 12
+assert calculator("5 / 0") == "Error: can't divide by zero"
+assert calculator("2 ** 3").startswith("Error:")  # powers not supported, no crash
 
 # trivia search
 answer = search_trivia("how many moons does jupiter have")

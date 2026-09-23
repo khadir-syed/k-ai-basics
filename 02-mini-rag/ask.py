@@ -10,6 +10,10 @@ import urllib.request
 
 DOCS_DIR = os.path.join(os.path.dirname(__file__), "docs")
 
+# Models used by --key mode. Swap in a newer model name here if you like.
+ANTHROPIC_MODEL = "claude-haiku-4-5"
+OPENAI_MODEL = "gpt-4o-mini"
+
 
 def load_chunks(docs_dir=DOCS_DIR):
     """Read every .txt file in docs_dir, split each into paragraphs.
@@ -18,7 +22,8 @@ def load_chunks(docs_dir=DOCS_DIR):
     """
     chunks = []
     for path in sorted(glob.glob(os.path.join(docs_dir, "*.txt"))):
-        text = open(path, encoding="utf-8").read()
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
         for para in text.split("\n\n"):
             para = " ".join(para.split())  # collapse whitespace/newlines
             if para:
@@ -31,8 +36,11 @@ def rank_chunks(question, chunks, top_n=5):
 
     Returns a list of (source, text, score) sorted highest score first.
     """
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
+    try:
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        from sklearn.metrics.pairwise import cosine_similarity
+    except ImportError:
+        sys.exit("Missing packages. Run: pip install -r requirements.txt")
 
     texts = [c[1] for c in chunks]
     vectorizer = TfidfVectorizer(stop_words="english")
@@ -49,7 +57,7 @@ def build_bar_chart(results, width=20):
     """results: list of (source, text, score) -> formatted string."""
     lines = []
     for source, text, score in results:
-        bar = "#" * max(1, round(score * width))
+        bar = "#" * round(score * width)
         pct = f"{score * 100:5.1f}%"
         snippet = text if len(text) <= 70 else text[:67] + "..."
         lines.append(f"{source:<24} {bar:<{width}} {pct}\n    {snippet}")
@@ -71,7 +79,7 @@ def call_live_api(question, context):
         req = urllib.request.Request(
             "https://api.anthropic.com/v1/messages",
             data=json.dumps({
-                "model": "claude-3-5-haiku-latest",
+                "model": ANTHROPIC_MODEL,
                 "max_tokens": 300,
                 "messages": [{"role": "user", "content": prompt}],
             }).encode(),
@@ -89,7 +97,7 @@ def call_live_api(question, context):
         req = urllib.request.Request(
             "https://api.openai.com/v1/chat/completions",
             data=json.dumps({
-                "model": "gpt-4o-mini",
+                "model": OPENAI_MODEL,
                 "max_tokens": 300,
                 "messages": [{"role": "user", "content": prompt}],
             }).encode(),
@@ -112,6 +120,13 @@ def run(question, use_key=False):
 
     results = rank_chunks(question, chunks)
 
+    if results[0][2] == 0:
+        print(
+            "\n🤷 None of the stories share any words with your question, so "
+            "there's nothing to answer from. Try asking about one of the stories.\n"
+        )
+        return
+
     print("\nTop 5 story paragraphs that best match your question:\n")
     print(build_bar_chart(results))
 
@@ -125,7 +140,7 @@ def run(question, use_key=False):
     try:
         answer = call_live_api(question, context)
     except urllib.error.URLError as exc:
-        sys.exit(f"Could not reach the live API: {exc}")
+        sys.exit(f"The live API call failed (check your key and internet): {exc}")
 
     if answer is None:
         sys.exit(

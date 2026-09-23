@@ -50,9 +50,8 @@ def load_model():
 
 
 def run(sentence):
+    tokenizer, model = load_model()  # exits with a friendly message if packages are missing
     import torch
-
-    tokenizer, model = load_model()
 
     token_ids = tokenizer.encode(sentence)
     tokens = [(tokenizer.decode([tid]), tid) for tid in token_ids]

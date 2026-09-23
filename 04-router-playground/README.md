@@ -112,6 +112,13 @@ used first if both are set). The output stays the same shape (`[ROUTED TO]`
 LLM's decision on the same input. Without `--key`, this demo **never** makes
 an internet call and **never** needs a key at all.
 
+**Which AI model does it use?** Right now it uses `claude-haiku-4-5`
+(Anthropic) or `gpt-4o-mini` (OpenAI) — small, fast, cheap models. AI
+companies bring out new models all the time, like new versions of a toy. If
+you want to try a newer one, open [`router.py`](router.py), find the two lines
+near the top that start with `ANTHROPIC_MODEL` and `OPENAI_MODEL`, and put
+the new model's name between the quotes.
+
 ## Self-check
 
 ```bash

@@ -12,6 +12,9 @@ assert len(results) == 5
 assert results[0][2] >= results[-1][2], "results should be sorted highest score first"
 assert "three_little_pigs.txt" == results[0][0], "top match should come from the pigs story"
 
+# A question sharing no words with any story scores exactly 0.
+assert rank_chunks("tax rules for crypto", chunks)[0][2] == 0
+
 chart = build_bar_chart(results[:2])
 assert "#" in chart
 assert "%" in chart

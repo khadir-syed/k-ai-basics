@@ -78,6 +78,10 @@ mountains, inventions...), it calls the trivia lookup. Otherwise, it just
 answers directly — showing you that a real agent should know when a tool
 *doesn't* apply, too.
 
+If you give the calculator something it can't do — like dividing by zero —
+it doesn't break. It says "I couldn't work that out" and tells you why,
+just like a friend saying "hmm, that sum doesn't make sense."
+
 ## Optional: let a real AI model decide, with an API key
 
 By default the tool-picking is just a rule, not real reasoning. With an API
@@ -93,6 +97,13 @@ python trace.py "what is 12 times 4" --key
 `OPENAI_API_KEY` also works if you don't have an Anthropic key (Anthropic
 is used first if both are set). Without `--key`, this demo **never** makes
 an internet call and **never** needs a key at all.
+
+**Which AI model does it use?** Right now it uses `claude-haiku-4-5`
+(Anthropic) or `gpt-4o-mini` (OpenAI) — small, fast, cheap models. AI
+companies bring out new models all the time, like new versions of a toy. If
+you want to try a newer one, open [`trace.py`](trace.py), find the two lines
+near the top that start with `ANTHROPIC_MODEL` and `OPENAI_MODEL`, and put
+the new model's name between the quotes.
 
 ## Where this leads
 

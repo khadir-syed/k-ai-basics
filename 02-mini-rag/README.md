@@ -21,7 +21,9 @@ you the "look something up" part in plain sight — no hidden magic.
 flowchart LR
     A["Your question"] --> B["Chop stories\ninto paragraphs"]
     B --> C["Compare question\nto every paragraph"]
-    C --> D["Top 5 best-matching\nparagraphs, with scores"]
+    C --> F{"Did any paragraph\nshare a word?"}
+    F -->|no| G["Say so honestly —\nno made-up answer"]
+    F -->|yes| D["Top 5 best-matching\nparagraphs, with scores"]
     D --> E["Best paragraph\nshown as the answer"]
 ```
 
@@ -85,6 +87,13 @@ wolf" to a word-matching search. That's not a bug — it's the real
 limitation of this technique, and part of what this demo is here to show
 you.
 
+## What if nothing matches at all?
+
+If you ask about something that isn't in any story — like "tax rules for
+crypto" — not a single word lines up. The demo then tells you "nothing to
+answer from" instead of pretending. That's the honest thing to do: if you
+can't find it in the books, you say "I don't know," you don't make it up.
+
 ## Optional: real generated answers with an API key
 
 By default this demo only *retrieves* — it never writes new sentences, it
@@ -100,3 +109,10 @@ python ask.py "Why did the wolf blow down the straw house?" --key
 `OPENAI_API_KEY` also works if you don't have an Anthropic key (Anthropic
 is used first if both are set). Without `--key`, this demo **never** makes
 an internet call and **never** needs a key at all.
+
+**Which AI model does it use?** Right now it uses `claude-haiku-4-5`
+(Anthropic) or `gpt-4o-mini` (OpenAI) — small, fast, cheap models. AI
+companies bring out new models all the time, like new versions of a toy. If
+you want to try a newer one, open [`ask.py`](ask.py), find the two lines
+near the top that start with `ANTHROPIC_MODEL` and `OPENAI_MODEL`, and put
+the new model's name between the quotes.

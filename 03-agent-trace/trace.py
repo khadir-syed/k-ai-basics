@@ -12,7 +12,8 @@ import urllib.request
 
 TRIVIA = {
     "how many moons does jupiter have": (
-        "Jupiter has 95 confirmed moons — the most of any planet in our solar system."
+        "Jupiter has over 95 confirmed moons, and astronomers keep finding "
+        "more. Only Saturn has more."
     ),
     "who invented the light bulb": (
         "Thomas Edison is often credited with inventing the practical light bulb "
@@ -35,6 +36,10 @@ TRIVIA = {
         "270 that fuse together over time."
     ),
 }
+
+# Models used by --key mode. Swap in a newer model name here if you like.
+ANTHROPIC_MODEL = "claude-haiku-4-5"
+OPENAI_MODEL = "gpt-4o-mini"
 
 STOPWORDS = {"a", "an", "the", "is", "are", "do", "does", "in", "of", "what", "how", "who"}
 
@@ -78,10 +83,17 @@ def _safe_eval(node):
 
 
 def calculator(expression):
-    """Evaluate a simple arithmetic expression safely (no eval())."""
-    tree = ast.parse(expression, mode="eval")
-    result = _safe_eval(tree.body)
-    return result
+    """Evaluate a simple arithmetic expression safely (no eval()).
+
+    Returns the number, or an "Error: ..." string if it can't be worked out,
+    so a bad expression never crashes the agent.
+    """
+    try:
+        return _safe_eval(ast.parse(expression, mode="eval").body)
+    except ZeroDivisionError:
+        return "Error: can't divide by zero"
+    except (SyntaxError, ValueError, TypeError):
+        return f"Error: can't calculate {expression!r} (only + - * / on numbers)"
 
 
 # ---- Tool 2: mock trivia search ----------------------------------------
@@ -134,7 +146,10 @@ def run_rule_based(question):
         print(f'[TOOL CALL] calculator("{tool_input}")')
         result = calculator(tool_input)
         print(f"[TOOL RESULT] {result}")
-        print(f"[FINAL ANSWER] {tool_input} = {result}")
+        if isinstance(result, str):
+            print(f"[FINAL ANSWER] I couldn't work that out — {result.removeprefix('Error: ')}.")
+        else:
+            print(f"[FINAL ANSWER] {tool_input} = {result}")
     elif tool == "search_trivia":
         print(f'[TOOL CALL] search_trivia("{tool_input}")')
         result = search_trivia(tool_input)
@@ -232,7 +247,7 @@ def run_with_anthropic(question, api_key):
     data = _post_json(
         "https://api.anthropic.com/v1/messages",
         {
-            "model": "claude-3-5-haiku-latest",
+            "model": ANTHROPIC_MODEL,
             "max_tokens": 500,
             "system": system,
             "tools": TOOL_SCHEMAS_ANTHROPIC,
@@ -247,8 +262,10 @@ def run_with_anthropic(question, api_key):
 
     tool_uses = [b for b in data["content"] if b["type"] == "tool_use"]
     if not tool_uses:
-        final_text = next(b["text"] for b in data["content"] if b["type"] == "text")
-        print(f"[FINAL ANSWER] {final_text.strip()}")
+        final_text = " ".join(
+            b["text"] for b in data["content"] if b["type"] == "text"
+        ).strip()
+        print(f"[FINAL ANSWER] {final_text}")
         return
 
     messages.append({"role": "assistant", "content": data["content"]})
@@ -265,7 +282,7 @@ def run_with_anthropic(question, api_key):
     data = _post_json(
         "https://api.anthropic.com/v1/messages",
         {
-            "model": "claude-3-5-haiku-latest",
+            "model": ANTHROPIC_MODEL,
             "max_tokens": 500,
             "system": system,
             "tools": TOOL_SCHEMAS_ANTHROPIC,
@@ -295,7 +312,7 @@ def run_with_openai(question, api_key):
 
     data = _post_json(
         "https://api.openai.com/v1/chat/completions",
-        {"model": "gpt-4o-mini", "messages": messages, "tools": TOOL_SCHEMAS_OPENAI},
+        {"model": OPENAI_MODEL, "messages": messages, "tools": TOOL_SCHEMAS_OPENAI},
         headers,
     )
     msg = data["choices"][0]["message"]
@@ -320,7 +337,7 @@ def run_with_openai(question, api_key):
 
     data = _post_json(
         "https://api.openai.com/v1/chat/completions",
-        {"model": "gpt-4o-mini", "messages": messages, "tools": TOOL_SCHEMAS_OPENAI},
+        {"model": OPENAI_MODEL, "messages": messages, "tools": TOOL_SCHEMAS_OPENAI},
         headers,
     )
     print(f"[FINAL ANSWER] {data['choices'][0]['message']['content'].strip()}")
@@ -343,7 +360,7 @@ def run_live(question):
         else:
             run_with_openai(question, openai_key)
     except urllib.error.URLError as exc:
-        sys.exit(f"Could not reach the live API: {exc}")
+        sys.exit(f"The live API call failed (check your key and internet): {exc}")
 
 
 def main():
