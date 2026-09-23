@@ -2,8 +2,8 @@
 
 > Clone it, run one command, and watch how AI actually works — right in your terminal. No sign-ups, no cloud, no credit card.
 
-[![Links: K THE TECHMAN](https://img.shields.io/badge/K_THE_TECHMAN-All_links-000000?style=flat-square)](https://khadir-syed.github.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![Links: K THE TECHMAN](https://img.shields.io/badge/K_THE_TECHMAN-All_links-D97706?style=flat-square&labelColor=181512)](https://khadir-syed.github.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-D97706?style=flat-square&labelColor=181512)](LICENSE)
 
 ## See it in 5 seconds
 
