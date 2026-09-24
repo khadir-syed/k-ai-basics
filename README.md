@@ -48,10 +48,11 @@ clearly.
 | 07 | [Prompt Engineering Playground](07-prompt-playground/) | Small wording changes to a prompt change the answer a lot — see real before/after answers, and check your own prompt | `python playground.py` | No (optional) |
 | 08 | [Prompt Injection Demo](08-prompt-injection/) | A hidden instruction inside a document can hijack an AI — and a simple filter only catches the attacks it already knows | `python inject.py` | No (optional) |
 | 09 | [PII Redaction Demo](09-pii-redaction/) | Black out private data (ID numbers, cards, emails) before an AI sees it — and see what simple patterns miss | `python redact.py` | No |
+| 10 | [Multi-Agent Handoff](10-multi-agent-handoff/) | Two AI agents working as a team: one drafts a bug report, the other decides how urgent it is — and the handoff between them can break | `python handoff.py "describe a bug"` | No (optional — best with one) |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09**. Each one builds on the idea
+Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10**. Each one builds on the idea
 before it:
 
 1. **01** shows you the smallest building block — a token.
@@ -72,11 +73,14 @@ before it:
 9. **09** is the other side of the same coin: instead of bad instructions
    getting *in*, it's private data getting *out* — and how to black it out
    first.
+10. **10** is the finale — this is what "multi-agent" actually means: two
+    agents, each with one job, passing work between them. It builds on 03
+    (one agent acting) and 04 (picking the right specialist).
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
 ```mermaid
-flowchart LR
+flowchart TB
     A["01: Tokens\n(the building blocks)"] --> B["02: Retrieval\n(looking things up)"]
     B --> C["03: Agent trace\n(deciding + acting)"]
     C --> D["04: Router\n(picking the right skill)"]
@@ -87,6 +91,9 @@ flowchart LR
     F --> G["07: Prompt playground\n(asking it well)"]
     G --> H["08: Prompt injection\n(when a document gives the orders)"]
     H --> I["09: PII redaction\n(blacking out private data)"]
+    I --> J["10: Multi-agent handoff\n(agents working as a team)"]
+    C -.->|"one agent → two"| J
+    J ==>|"next step"| K(["k_ai-agent-skills\n(the full-power version)"])
 ```
 
 ## How to install and run a demo
@@ -122,12 +129,15 @@ python3 check_llm_copies.py
 
 Once you've run them all and want to see what the "real," full-power
 version of these ideas looks like — the actual skills, agents, and
-orchestration layers this repo simplifies — **04's router is the bridge**:
-it's a simplified mirror of the `request-router-agent` in
+orchestration layers this repo simplifies — **start from Demo 10**. Its two
+agents passing a bug report between them are a simplified version of the
+multi-agent orchestration in
 [`k_ai-agent-skills`](https://github.com/khadir-syed/k_ai-agent-skills),
-which routes real work to real agents with human checkpoints. From there,
-head to the tech-version repos in the `k-` series. Links to all of them:
-**https://khadir-syed.github.io/**
+which adds real tool access, more agents, and human-in-the-loop checkpoints.
+Demo 04's router is the other bridge: it's a simplified mirror of that
+repo's `request-router-agent`, which decides which agent gets the work.
+From there, head to the tech-version repos in the `k-` series. Links to all
+of them: **https://khadir-syed.github.io/**
 
 ## License
 
