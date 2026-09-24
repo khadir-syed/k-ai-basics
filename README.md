@@ -47,10 +47,11 @@ clearly.
 | 06 | [Hallucination Demo](06-hallucination-demo/) | Why looking things up matters — without documents, AI can only guess, and a guess can sound sure | `python compare.py "your question"` | No (optional — best with one) |
 | 07 | [Prompt Engineering Playground](07-prompt-playground/) | Small wording changes to a prompt change the answer a lot — see real before/after answers, and check your own prompt | `python playground.py` | No (optional) |
 | 08 | [Prompt Injection Demo](08-prompt-injection/) | A hidden instruction inside a document can hijack an AI — and a simple filter only catches the attacks it already knows | `python inject.py` | No (optional) |
+| 09 | [PII Redaction Demo](09-pii-redaction/) | Black out private data (ID numbers, cards, emails) before an AI sees it — and see what simple patterns miss | `python redact.py` | No |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08**. Each one builds on the idea
+Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09**. Each one builds on the idea
 before it:
 
 1. **01** shows you the smallest building block — a token.
@@ -68,6 +69,9 @@ before it:
    *ask* it well. It stands on its own, so you can also try it any time.
 8. **08** is a quick look at how things go wrong: a document can carry its
    own sneaky prompt, written by an attacker instead of you.
+9. **09** is the other side of the same coin: instead of bad instructions
+   getting *in*, it's private data getting *out* — and how to black it out
+   first.
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
@@ -82,6 +86,7 @@ flowchart LR
     B -.->|"same search"| F
     F --> G["07: Prompt playground\n(asking it well)"]
     G --> H["08: Prompt injection\n(when a document gives the orders)"]
+    H --> I["09: PII redaction\n(blacking out private data)"]
 ```
 
 ## How to install and run a demo

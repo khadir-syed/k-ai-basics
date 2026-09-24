@@ -1,0 +1,3 @@
+Customer John Smith, SSN 000-12-3456, reports a billing issue: he was
+charged twice for the same order. Card on file is 4111 1111 1111 1111.
+Please reply to john.smith@example.com once the refund is done.

@@ -1,0 +1,20 @@
+{
+  "_about": "Every piece of made-up personal data in the sample docs, written by hand. redact.py checks its results against this list to see what it missed.",
+  "1_support_ticket.txt": [
+    ["NAME", "John Smith"],
+    ["SSN", "000-12-3456"],
+    ["CARD", "4111 1111 1111 1111"],
+    ["EMAIL", "john.smith@example.com"]
+  ],
+  "2_order_note.txt": [
+    ["NAME", "Jane Doe"],
+    ["CARD", "5555-5555-5555-4444"],
+    ["EMAIL", "jane.doe@example.com"],
+    ["NAME", "Sam Taylor"]
+  ],
+  "3_chat_log.txt": [
+    ["NAME", "Sam Taylor"],
+    ["SSN", "000 45 6789"],
+    ["EMAIL", "sam dot taylor at example dot com"]
+  ]
+}
