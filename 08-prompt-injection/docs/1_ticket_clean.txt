@@ -1,0 +1,3 @@
+Customer says the login page times out after 30 seconds. It happens on
+both the phone app and the website, mostly in the evening. They have
+already tried clearing their browser cache.

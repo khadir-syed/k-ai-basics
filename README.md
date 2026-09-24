@@ -46,10 +46,11 @@ clearly.
 | 05 | [Context Window Explorer](05-context-window/) | Why AI "forgets" the start of a long chat — it only has room for so many tokens | `python explore.py` | No |
 | 06 | [Hallucination Demo](06-hallucination-demo/) | Why looking things up matters — without documents, AI can only guess, and a guess can sound sure | `python compare.py "your question"` | No (optional — best with one) |
 | 07 | [Prompt Engineering Playground](07-prompt-playground/) | Small wording changes to a prompt change the answer a lot — see real before/after answers, and check your own prompt | `python playground.py` | No (optional) |
+| 08 | [Prompt Injection Demo](08-prompt-injection/) | A hidden instruction inside a document can hijack an AI — and a simple filter only catches the attacks it already knows | `python inject.py` | No (optional) |
 
 ## Which one should I run first?
 
-Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07**. Each one builds on the idea
+Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08**. Each one builds on the idea
 before it:
 
 1. **01** shows you the smallest building block — a token.
@@ -65,6 +66,8 @@ before it:
    the same question, answered with no documents (a guess) and with them.
 7. **07** is the finishing skill: now that you know how AI works, learn to
    *ask* it well. It stands on its own, so you can also try it any time.
+8. **08** is a quick look at how things go wrong: a document can carry its
+   own sneaky prompt, written by an attacker instead of you.
 
 Skipping ahead works fine too, but the ideas click faster in this order.
 
@@ -78,6 +81,7 @@ flowchart LR
     E --> F["06: Hallucination\n(guessing vs looking up)"]
     B -.->|"same search"| F
     F --> G["07: Prompt playground\n(asking it well)"]
+    G --> H["08: Prompt injection\n(when a document gives the orders)"]
 ```
 
 ## How to install and run a demo
