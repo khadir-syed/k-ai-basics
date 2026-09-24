@@ -183,4 +183,4 @@ downstream action following a decision, see
 human approval checkpoints across real agents, see
 [`request-router-agent-controlled`](https://github.com/khadir-syed/k_ai-agent-skills)
 and its autonomous counterpart in `k_ai-agent-skills`. Links to the full
-tech-version `k-` repos: **https://khadir-syed.github.io/**
+tech-version `k_` repos: **https://khadir-syed.github.io/**

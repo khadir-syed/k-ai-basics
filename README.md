@@ -136,7 +136,7 @@ multi-agent orchestration in
 which adds real tool access, more agents, and human-in-the-loop checkpoints.
 Demo 04's router is the other bridge: it's a simplified mirror of that
 repo's `request-router-agent`, which decides which agent gets the work.
-From there, head to the tech-version repos in the `k-` series. Links to all
+From there, head to the tech-version repos in the `k_` series. Links to all
 of them: **https://khadir-syed.github.io/**
 
 ## License

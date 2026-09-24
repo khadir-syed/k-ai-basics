@@ -136,5 +136,5 @@ the new model's name between the quotes.
 This demo hardcodes 2 tools and a tiny rulebook so you can see every
 moving part. Real AI agents chain together many tools, remember earlier
 steps, and can recover when a tool fails — that's what the full
-orchestration layer in the tech-version `k-` repos builds on top of this
+orchestration layer in the tech-version `k_` repos builds on top of this
 same idea. Links to those: **https://khadir-syed.github.io/**
