@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files, the pinned Pyodide from jsDelivr and the
+       GitHub profile photo (the tab icon) may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' https://avatars.githubusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="See how the same AI gives a far better answer when you ask more clearly — with real answers. Runs in your browser, nothing to install.">
+  <title>Ask AI better — k_ai-basics</title>
+  <link rel="icon" type="image/jpeg" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=64">
+  <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=180">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="markdown.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
+  <main class="wrap">
+    <a class="back" href="../">← All demos</a>
+    <header class="hero">
+      <span class="badge" data-t="badge">k_ai-basics · Demo 07 · Prompt engineering</span>
+      <h1 data-t="title">Ask AI better</h1>
+      <p class="subtitle" data-t="subtitle">Same AI, clearer question, better answer</p>
+    </header>
+
+    <section class="card">
+      <p data-t="intro_1">Imagine you ask a friend: "Get me a snack." They come back with a whole bag of crisps, three biscuits and a banana. Not wrong — just not what you wanted.</p>
+      <p data-t="intro_2">Now you say: "Get me one green apple from the fruit bowl, cut into four slices, please." This time you get exactly that. Your friend didn't get smarter. You got clearer.</p>
+      <p data-t="intro_3">AI works the same way. The message you type is called a prompt, and small changes to it — saying what exactly, how long, what shape and who it's for — change the answer a lot.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="pairs_heading">4 examples: a vague question vs a clear one</h2>
+      <p data-t="pairs_help">We asked a real AI each question and saved its answers. Look at how long each answer is — and whether it's what you'd actually want.</p>
+      <p id="saved-note" class="muted" data-t="saved_note">These are real answers from the AI model gpt-oss-120b, saved on 23 September 2026. Ask today and the words will differ, but the pattern usually holds.</p>
+      <p class="muted" data-t="format_note">AI tools write their answers with formatting symbols, like ## for a heading or | for a table. Chat apps turn those into headings and tables — and so does this page.</p>
+      <ol class="examples" id="pairs">
+        <li class="ex pair">
+          <p class="ex-what" data-t="p1_name">1. Too vague</p>
+          <div class="side vague">
+            <p class="side-head"><span class="missed-mark">❌</span> <span data-t="vague_label">Vague:</span> <code class="prompt">Write about dogs</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="vague"></div>
+          </div>
+          <div class="side improved">
+            <p class="side-head"><span>✅</span> <span data-t="clear_label">Clear:</span> <code class="prompt">Write a 3-sentence, upbeat product description for a dog leash, aimed at first-time dog owners.</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="improved"></div>
+          </div>
+          <p class="try-label" data-t="changed">What changed:</p>
+          <ul class="changes">
+            <li><b>Specific:</b> a dog leash, not "dogs" in general</li>
+            <li><b>Format:</b> a product description</li>
+            <li><b>Limit:</b> 3 sentences, so it can't ramble</li>
+            <li><b>Audience:</b> first-time dog owners, so it picks the right words</li>
+          </ul>
+          <p class="muted score-line"><span data-t="checklist">Checklist score:</span> <span class="score">0/5 → 4/5</span></p>
+        </li>
+        <li class="ex pair">
+          <p class="ex-what" data-t="p2_name">2. No format</p>
+          <div class="side vague">
+            <p class="side-head"><span class="missed-mark">❌</span> <span data-t="vague_label">Vague:</span> <code class="prompt">Tell me about exercise</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="vague"></div>
+          </div>
+          <div class="side improved">
+            <p class="side-head"><span>✅</span> <span data-t="clear_label">Clear:</span> <code class="prompt">Give me 3 bullet points, one line each, on easy ways a busy office worker can exercise at home.</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="improved"></div>
+          </div>
+          <p class="try-label" data-t="changed">What changed:</p>
+          <ul class="changes">
+            <li><b>Format:</b> bullet points</li>
+            <li><b>Limit:</b> 3 points, one line each</li>
+            <li><b>Specific:</b> easy exercise at home, not all of exercise</li>
+            <li><b>Audience:</b> a busy office worker</li>
+          </ul>
+          <p class="muted score-line"><span data-t="checklist">Checklist score:</span> <span class="score">0/5 → 4/5</span></p>
+        </li>
+        <li class="ex pair">
+          <p class="ex-what" data-t="p3_name">3. No limits</p>
+          <div class="side vague">
+            <p class="side-head"><span class="missed-mark">❌</span> <span data-t="vague_label">Vague:</span> <code class="prompt">Write an email asking for a day off</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="vague"></div>
+          </div>
+          <div class="side improved">
+            <p class="side-head"><span>✅</span> <span data-t="clear_label">Clear:</span> <code class="prompt">Write a polite email to my manager asking for a day off on Friday 3 October. Keep it under 80 words.</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="improved"></div>
+          </div>
+          <p class="try-label" data-t="changed">What changed:</p>
+          <ul class="changes">
+            <li><b>Limit:</b> under 80 words</li>
+            <li><b>Specific:</b> which day, and a polite tone</li>
+            <li><b>Audience:</b> my manager</li>
+          </ul>
+          <p class="muted score-line"><span data-t="checklist">Checklist score:</span> <span class="score">1/5 → 4/5</span></p>
+        </li>
+        <li class="ex pair">
+          <p class="ex-what" data-t="p4_name">4. No role or audience</p>
+          <div class="side vague">
+            <p class="side-head"><span class="missed-mark">❌</span> <span data-t="vague_label">Vague:</span> <code class="prompt">Explain taxes</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="vague"></div>
+          </div>
+          <div class="side improved">
+            <p class="side-head"><span>✅</span> <span data-t="clear_label">Clear:</span> <code class="prompt">You are a friendly teacher. Explain what taxes are to a 10-year-old in 4 short sentences, using a lemonade stand as the example.</code></p>
+            <p class="count"></p>
+            <div class="answer" data-side="improved"></div>
+          </div>
+          <p class="try-label" data-t="changed">What changed:</p>
+          <ul class="changes">
+            <li><b>Role:</b> a friendly teacher</li>
+            <li><b>Audience:</b> a 10-year-old</li>
+            <li><b>Limit:</b> 4 short sentences</li>
+            <li><b>Specific:</b> a lemonade stand example</li>
+          </ul>
+          <p class="muted score-line"><span data-t="checklist">Checklist score:</span> <span class="score">0/5 → 4/5</span></p>
+        </li>
+      </ol>
+      <noscript><p class="warning">Showing the AI's answers needs JavaScript switched on in your browser.</p></noscript>
+      <p class="muted" data-t="cut_note">Some of the long answers stop mid-sentence: the AI was still going when it reached the length limit we gave it.</p>
+      <p class="lesson" data-t="pairs_lesson">The lesson: a vague question gets a long answer about everything. Say what exactly, what shape, how long and who it's for — and you get what you wanted.</p>
+      <p id="answers-status" class="muted" role="status"
+         data-words="words"
+         data-show="Show all" data-less="Show less"
+         data-failed="Sorry — the saved answers couldn't load. Check your internet connection and refresh the page."></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="check_heading">Check your own question</h2>
+      <p data-t="check_help">A simple checklist looks for the 5 ingredients of a clear question. Tap a vague example, then add details — and watch the score go up.</p>
+      <div class="chips" id="chips">
+        <button type="button" class="chip-btn" disabled data-try="Write about dogs">Write about dogs</button>
+        <button type="button" class="chip-btn" disabled data-try="Tell me about exercise">Tell me about exercise</button>
+        <button type="button" class="chip-btn" disabled data-try="Write an email asking for a day off">Write an email asking for a day off</button>
+        <button type="button" class="chip-btn" disabled data-try="Explain taxes">Explain taxes</button>
+      </div>
+      <label class="try-label" for="try" data-t="try_label">Your question for an AI:</label>
+      <textarea id="try" rows="3" disabled spellcheck="false" placeholder="Tap an example above, or type your own question"></textarea>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the checklist ready in your browser… (a one-time download of about 13 MB — after that it's quick)"
+         data-failed="Sorry — the checklist couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub.">Getting the checklist ready in your browser…</p>
+      <p id="check-score" class="check-score" aria-live="polite" data-label="Checklist score:"></p>
+      <ul id="check-list" class="check-list" data-tip="tip:"></ul>
+      <p class="warning" data-t="not_grade">This is a reminder list, not a grade. It only spots certain words — it can't tell if your question makes sense. "You are a list of 5 words for kids" is nonsense, but it scores 4/5. And a quick question doesn't need all 5.</p>
+      <p id="checks-live" class="muted" data-ok="✓ The examples above were just checked live against the real demo code, in your browser." data-bad="⚠ Some examples no longer match the demo code — the ones marked ⚠ need updating."></p>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved. This page never talks to an AI — it shows answers that were saved earlier.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/07-prompt-playground" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/07-prompt-playground#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
+    </section>
+
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
+  </main>
+</body>
+</html>

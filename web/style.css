@@ -99,7 +99,7 @@ textarea {
 
 /* The 6 examples */
 .examples { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 10px; }
-.ex { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.ex { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-width: 0; }
 .ex p { margin: 0 0 6px; }
 .ex p:last-child { margin-bottom: 0; }
 .ex-what { font-weight: 700; }
@@ -127,3 +127,92 @@ textarea {
 .chip-btn:disabled { opacity: 0.5; cursor: wait; }
 .chip-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 .try-label { font-weight: 700; margin: 8px 0 6px; }
+
+/* Back link on each demo page */
+.back { display: inline-block; color: var(--muted); font-size: 14px; text-decoration: none; margin-bottom: 8px; }
+.back:hover { color: var(--amber); }
+.back:focus-visible, .badge:focus-visible, .demo-card:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* Home page: brand header, same as https://khadir-syed.github.io */
+.brand .brand-frame {
+  width: 112px; height: 112px; margin: 0 auto 16px; padding: 2.5px; border-radius: 28px;
+  background: linear-gradient(to bottom, #fbbf24, #f59e0b, #78350f);
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.35), inset 0 0 10px rgba(245, 158, 11, 0.2);
+}
+.brand img { display: block; width: 100%; height: 100%; border-radius: 25.5px; object-fit: cover; background: #0c0a09; }
+.brand .badge { text-decoration: none; }
+.brand-name {
+  margin: 10px 0 2px; font-size: 30px; font-weight: 900; letter-spacing: -0.6px;
+  text-transform: uppercase; color: #fff; line-height: 1.2;
+}
+.brand-name span { color: var(--amber); }
+.brand .subtitle { color: rgba(253, 230, 138, 0.9); }
+.pills { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 14px 0 0; padding: 0; }
+.pills li {
+  font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 6px;
+  background: var(--card); border: 1px solid var(--line); color: var(--soft);
+}
+.hook { margin: 12px 0 0; color: var(--muted); font-size: 12px; font-style: italic; }
+.card h1 { margin-top: 0; font-size: 22px; line-height: 1.25; }
+
+.demo-card {
+  display: block; background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 16px 20px; margin: 12px 0; color: var(--text); text-decoration: none;
+}
+.demo-card:hover { border-color: var(--orange); background: #24201c; }
+.demo-num { display: block; color: var(--amber); font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+.demo-title { display: block; font-size: 18px; font-weight: 800; margin: 2px 0 4px; }
+.demo-card:hover .demo-title { color: var(--amber-soft); }
+.demo-line { display: block; color: var(--muted); font-size: 14px; }
+
+/* Demo 07: vague vs clear */
+.side { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+.side-head code, .prompt {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px;
+  word-break: break-word;
+}
+.count { font-weight: 700; color: var(--amber-soft); font-size: 14px; }
+.count:empty { display: none; }
+.vague .count { color: #fca5a5; }
+/* AI answers, formatted by markdown.js; "clamped" shows only the first 3 lines. */
+.answer {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px 14px; margin: 6px 0 8px;
+}
+.more-btn { margin-top: 6px; }
+.md { font-size: 14px; line-height: 1.55; color: var(--soft); overflow-wrap: break-word; }
+.md.clamped {
+  max-height: calc(3 * 1.55em); overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md h3, .md h4 { color: #fff; font-weight: 800; line-height: 1.3; margin: 14px 0 6px; }
+.md h3 { font-size: 16px; }
+.md h4 { font-size: 15px; }
+.md p, .md ul, .md ol { margin: 0 0 8px; }
+.md ul, .md ol { padding-left: 22px; }
+.md li ul, .md li ol { margin: 2px 0 0; }
+.md strong { color: #fff; }
+.md hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
+.md-table { overflow-x: auto; margin: 0 0 8px; }
+.md table { border-collapse: collapse; font-size: 13px; line-height: 1.45; }
+.md th, .md td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; min-width: 7em; }
+.md th { background: var(--card); color: #fff; }
+.more-btn {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--amber); font: inherit; font-size: 14px; font-weight: 700;
+}
+.more-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.changes { margin: 0 0 8px; padding-left: 20px; font-size: 14px; color: var(--soft); }
+.score-line { margin: 0; }
+
+/* Demo 07: check your own question */
+.check-score { font-size: 18px; font-weight: 800; color: #fff; margin: 12px 0 6px; }
+.check-score:empty, .check-list:empty { display: none; }
+.check-list { list-style: none; margin: 0 0 12px; padding: 0; font-size: 14px; }
+.check-list li { padding: 4px 0; color: var(--soft); }
+.check-list .pass b { color: #86efac; }
+.check-list .fail b { color: #fca5a5; }

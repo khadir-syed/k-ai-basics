@@ -3,7 +3,7 @@
 // Pyodide and this repo's own files. All page text is in index.html.
 "use strict";
 
-const DEMO = "../09-pii-redaction/";
+const DEMO = "../../09-pii-redaction/";
 const PYODIDE_URL = "https://cdn.jsdelivr.net/npm/pyodide@314.0.7/";
 const $ = (id) => document.getElementById(id);
 

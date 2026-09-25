@@ -17,7 +17,7 @@ must pass all seven before it goes in:
 - [x] `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` are only ever read from environment variables, never written to a file or printed
 
 ## Dependencies
-- [x] `pip-audit` (or equivalent) run with no unresolved high/critical findings
+- [x] `pip-audit` finds no known vulnerabilities in any demo that installs packages (01, 02, 05, 06): in each of those folders, with its `.venv` switched on, run `pip install pip-audit` and then `pip-audit`. It checks every installed package, including the ones they pull in. Fix or explain any finding before pushing
 - [x] Versions pinned in each demo's `requirements.txt`
 
 ## Data
@@ -25,8 +25,8 @@ must pass all seven before it goes in:
 
 ## Web pages (`web/`)
 - [ ] Pages load the demo's own unchanged `.py` file — no copied or rewritten demo logic
-- [ ] Every page keeps its strict `Content-Security-Policy`: only its own files and the pinned Pyodide from jsDelivr; no inline scripts
-- [ ] Pyodide is pinned to one exact version, the same in `index.html` and `app.js`, and the `integrity="sha384-…"` fingerprint matches that version (see [web/README.md](web/README.md#upgrading-pyodide-read-this-first))
+- [ ] Every page keeps its strict `Content-Security-Policy`: only its own files, the pinned Pyodide from jsDelivr, and the GitHub profile photo; no inline scripts
+- [ ] Pyodide is pinned to one exact version, the same in every demo page's `index.html` and `app.js`, and the `integrity="sha384-…"` fingerprint matches that version (see [web/README.md](web/README.md#upgrading-pyodide-read-this-first))
 - [ ] Text is shown with `textContent` only — no `innerHTML`, `eval`, or `document.write`
 - [ ] No cookies, storage, analytics or tracking; nothing a visitor types is sent anywhere
 - [ ] No `--key` mode and no API keys on the web

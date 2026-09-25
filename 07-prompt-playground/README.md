@@ -1,5 +1,8 @@
 # 7. Prompt Engineering Playground
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/07/
+
 ## What is this?
 
 Imagine you ask a friend: *"Get me a snack."* They come back with a whole

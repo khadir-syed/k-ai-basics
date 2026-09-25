@@ -4,7 +4,7 @@
 > tool. Real systems need defense in depth, not a single regex filter.**
 
 > 🌐 **No terminal? Try this demo in your browser — nothing to install:**
-> https://khadir-syed.github.io/k_ai-basics/web/
+> https://khadir-syed.github.io/k_ai-basics/web/09/
 
 ## What is this?
 
