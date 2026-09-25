@@ -3,6 +3,9 @@
 > ⚠️ **This is a simplified teaching example, not a production security
 > tool. Real systems need defense in depth, not a single regex filter.**
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/
+
 ## What is this?
 
 Imagine you want a friend to help you with a letter from your bank. Before

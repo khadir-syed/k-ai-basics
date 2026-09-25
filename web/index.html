@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files and the pinned Pyodide from jsDelivr may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>PII Redaction Demo — k_ai-basics</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <span class="badge" data-t="badge"></span>
+      <h1 data-t="title"></h1>
+      <p class="subtitle" data-t="subtitle"></p>
+    </header>
+
+    <p class="warning" data-t="warning"></p>
+
+    <section class="card">
+      <p data-t="intro_1"></p>
+      <p data-t="intro_2"></p>
+      <p class="muted" data-t="fake_note"></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="run_heading"></h2>
+      <button id="run" class="btn" type="button" data-t="run_button"></button>
+      <p id="status" class="muted" role="status" aria-live="polite"></p>
+      <p class="legend" hidden id="legend">
+        <span class="redacted">[REDACTED-…]</span> <span data-t="legend_redacted"></span>
+        <span class="missed-line chip-missed">[MISSED]</span> <span data-t="legend_missed"></span>
+      </p>
+      <pre id="output" class="output" aria-live="polite" hidden></pre>
+      <p id="explain" data-t="explain" hidden></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="try_heading"></h2>
+      <p data-t="try_help"></p>
+      <p class="warning small" data-t="try_warning"></p>
+      <label class="sr-only" for="try" data-t="try_heading"></label>
+      <textarea id="try" rows="3" disabled spellcheck="false"></textarea>
+      <p id="try-found" class="muted"></p>
+      <pre id="try-output" class="output"></pre>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note"></p>
+      <p class="muted" data-t="code_note"></p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/09-pii-redaction" rel="noopener noreferrer" data-t="code_link"></a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/09-pii-redaction#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link"></a>
+    </section>
+
+    <footer class="footer" data-t="footer"></footer>
+  </main>
+</body>
+</html>

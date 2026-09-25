@@ -50,6 +50,15 @@ clearly.
 | 09 | [PII Redaction Demo](09-pii-redaction/) | Black out private data (ID numbers, cards, emails) before an AI sees it — and see what simple patterns miss | `python redact.py` | No |
 | 10 | [Multi-Agent Handoff](10-multi-agent-handoff/) | Two AI agents working as a team: one drafts a bug report, the other decides how urgent it is — and the handoff between them can break | `python handoff.py "describe a bug"` | No (optional — best with one) |
 
+### 🌐 No terminal? Try it in your browser
+
+Not a coder? **Demo 09 runs right in your web browser** — nothing to
+install, and it works on a phone:
+**https://khadir-syed.github.io/k_ai-basics/web/**
+
+It runs the very same Python code as the terminal version, inside your own
+browser. Nothing you type is sent anywhere. More demos will follow.
+
 ## Which one should I run first?
 
 Run them **in order: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10**. Each one builds on the idea
