@@ -8,7 +8,8 @@
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>PII Redaction Demo — k_ai-basics</title>
+  <meta name="description" content="See what a simple 'black marker' hides from an AI — and what slips through. Runs in your browser, nothing to install.">
+  <title>Hide private info from AI — k_ai-basics</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
           integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
@@ -16,51 +17,106 @@
   <script src="app.js" defer></script>
 </head>
 <body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
   <main class="wrap">
     <header class="hero">
-      <span class="badge" data-t="badge"></span>
-      <h1 data-t="title"></h1>
-      <p class="subtitle" data-t="subtitle"></p>
+      <span class="badge" data-t="badge">k_ai-basics · Demo 09 · PII redaction</span>
+      <h1 data-t="title">Hide private info from AI</h1>
+      <p class="subtitle" data-t="subtitle">What gets hidden — and what slips through</p>
     </header>
 
-    <p class="warning" data-t="warning"></p>
+    <p class="warning" data-t="warning">This is a simplified teaching example, not a production security tool. Real systems need defense in depth, not a single regex filter.</p>
 
     <section class="card">
-      <p data-t="intro_1"></p>
-      <p data-t="intro_2"></p>
-      <p class="muted" data-t="fake_note"></p>
+      <p data-t="intro_1">Imagine you want a friend to help you with a letter from your bank. Before you hand it over, you take a thick black marker and cross out your ID number, your card number and your email. Your friend can still help — they just can't see the secret bits.</p>
+      <p data-t="intro_2">AI works the same way. People often paste documents into AI tools, and those documents can contain private details. A program can act as the black marker: it looks for private details and hides them before the AI ever sees them. But a marker only hides what it knows how to spot.</p>
+      <p class="muted" data-t="fake_note">Every detail on this page is made up: the ID numbers start with 000 (never used for real ones), the card number is a standard test number, and the emails end in example.com.</p>
     </section>
 
     <section class="card">
-      <h2 data-t="run_heading"></h2>
-      <button id="run" class="btn" type="button" data-t="run_button"></button>
-      <p id="status" class="muted" role="status" aria-live="polite"></p>
+      <h2 data-t="examples_heading">6 examples: what the AI would see</h2>
+      <p data-t="examples_help">Each example goes through the black marker. On the left is what someone wrote; on the right is what the AI would see.</p>
+      <ol class="examples" id="examples">
+        <li class="ex">
+          <p class="ex-what" data-t="ex1_what">An ID number</p>
+          <p class="ex-flow"><code class="ex-in">000-99-8888</code> <span class="arrow" data-t="ex_sees">→ AI sees</span> <code class="ex-out redacted">[REDACTED-SSN]</code></p>
+          <p class="ex-why caught" data-t="ex1_why">✅ Caught. It fits the pattern the marker knows: 3 digits, a dash, 2 digits, a dash, 4 digits.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what" data-t="ex2_what">The same ID number, written with dots</p>
+          <p class="ex-flow"><code class="ex-in">000.99.8888</code> <span class="arrow" data-t="ex_sees">→ AI sees</span> <code class="ex-out">000.99.8888</code></p>
+          <p class="ex-why missed" data-t="ex2_why">❌ Missed. A person can see it's the same number — but the marker only knows the version with dashes.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what" data-t="ex3_what">An email address</p>
+          <p class="ex-flow"><code class="ex-in">sam@example.com</code> <span class="arrow" data-t="ex_sees">→ AI sees</span> <code class="ex-out redacted">[REDACTED-EMAIL]</code></p>
+          <p class="ex-why caught" data-t="ex3_why">✅ Caught. It has the @ sign and the dot the marker looks for.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what" data-t="ex4_what">The same email, spelled out in words</p>
+          <p class="ex-flow"><code class="ex-in">sam at example dot com</code> <span class="arrow" data-t="ex_sees">→ AI sees</span> <code class="ex-out">sam at example dot com</code></p>
+          <p class="ex-why missed" data-t="ex4_why">❌ Missed. People write emails like this to dodge spam — and it dodges the marker too. There's no @ sign to spot.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what" data-t="ex5_what">A card number</p>
+          <p class="ex-flow"><code class="ex-in">4111 1111 1111 1111</code> <span class="arrow" data-t="ex_sees">→ AI sees</span> <code class="ex-out redacted">[REDACTED-CARD]</code></p>
+          <p class="ex-why caught" data-t="ex5_why">✅ Caught. 16 digits in groups of 4 is exactly what the marker looks for.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what" data-t="ex6_what">A person's name</p>
+          <p class="ex-flow"><code class="ex-in">John Smith</code> <span class="arrow" data-t="ex_sees">→ AI sees</span> <code class="ex-out">John Smith</code></p>
+          <p class="ex-why missed" data-t="ex6_why">❌ Missed. To a computer, a name is just two ordinary words. There is no pattern that says "this is a name".</p>
+        </li>
+      </ol>
+      <p class="muted" data-t="examples_labels">The marker swaps each private detail for a label, like [REDACTED-SSN]. (SSN is the name of a US ID number.)</p>
+      <p class="lesson" data-t="examples_lesson">The lesson: the marker catches private details written the usual way, and misses names and anything written a little differently. Hiding private data from AI is harder than it looks.</p>
+      <p id="examples-live" class="muted" role="status" data-ok="✓ All 6 examples were just checked live against the real demo code, in your browser." data-bad="⚠ Some examples no longer match the demo code — the lines marked ⚠ need updating."></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="run_heading">Watch it work on 3 documents</h2>
+      <p data-t="run_help">This runs the full demo on 3 made-up documents — a support ticket, an order note and a chat — and shows what the marker caught and missed in each.</p>
+      <button id="run" class="btn" type="button" disabled data-t="run_button" data-again="Run it again">Run the demo</button>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the demo ready in your browser… (a one-time download of about 13 MB — after that it's quick)"
+         data-failed="Sorry — the demo couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub.">Getting the demo ready in your browser…</p>
+      <noscript><p class="warning">This part needs JavaScript switched on in your browser. The 6 examples above work without it.</p></noscript>
       <p class="legend" hidden id="legend">
-        <span class="redacted">[REDACTED-…]</span> <span data-t="legend_redacted"></span>
-        <span class="missed-line chip-missed">[MISSED]</span> <span data-t="legend_missed"></span>
+        <span class="redacted">[REDACTED-…]</span> <span data-t="legend_redacted">hidden from the AI</span>
+        <span class="missed-line chip-missed">[MISSED]</span> <span data-t="legend_missed">not hidden — the AI would see it</span>
       </p>
       <pre id="output" class="output" aria-live="polite" hidden></pre>
-      <p id="explain" data-t="explain" hidden></p>
+      <p id="explain" data-t="explain" hidden>Look at the red [MISSED] lines: names, and details written in an unusual way, slip straight through — just like in the examples above.</p>
     </section>
 
     <section class="card">
-      <h2 data-t="try_heading"></h2>
-      <p data-t="try_help"></p>
-      <p class="warning small" data-t="try_warning"></p>
-      <label class="sr-only" for="try" data-t="try_heading"></label>
-      <textarea id="try" rows="3" disabled spellcheck="false"></textarea>
-      <p id="try-found" class="muted"></p>
+      <h2 data-t="try_heading">Try it yourself</h2>
+      <p data-t="try_help">Tap an example to put it in the box, then change it a little and watch what happens. Can you find another way to write a number so the marker misses it?</p>
+      <div class="chips" id="chips">
+        <button type="button" class="chip-btn" disabled data-try="000-99-8888">000-99-8888</button>
+        <button type="button" class="chip-btn" disabled data-try="000.99.8888">000.99.8888</button>
+        <button type="button" class="chip-btn" disabled data-try="sam@example.com">sam@example.com</button>
+        <button type="button" class="chip-btn" disabled data-try="sam at example dot com">sam at example dot com</button>
+        <button type="button" class="chip-btn" disabled data-try="4111 1111 1111 1111">4111 1111 1111 1111</button>
+        <button type="button" class="chip-btn" disabled data-try="John Smith">John Smith</button>
+      </div>
+      <p class="warning small" data-t="try_warning">Only ever use made-up details. Nothing you type leaves your browser — there is no server.</p>
+      <label class="try-label" for="try" data-t="try_label">What someone writes:</label>
+      <textarea id="try" rows="3" disabled spellcheck="false" placeholder="Tap an example above, or type your own made-up sentence"></textarea>
+      <p class="try-label" data-t="try_result">What the AI would see:</p>
       <pre id="try-output" class="output"></pre>
+      <p id="try-found" class="muted" data-label="Private details hidden:" data-none="none — the AI would see all of it"></p>
     </section>
 
     <section class="card links">
-      <p class="muted" data-t="private_note"></p>
-      <p class="muted" data-t="code_note"></p>
-      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/09-pii-redaction" rel="noopener noreferrer" data-t="code_link"></a>
-      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/09-pii-redaction#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link"></a>
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/09-pii-redaction" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/09-pii-redaction#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
     </section>
 
-    <footer class="footer" data-t="footer"></footer>
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
   </main>
 </body>
 </html>

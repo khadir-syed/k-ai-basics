@@ -1,6 +1,6 @@
 # k_ai-basics
 
-> Clone it, run one command, and watch how AI actually works — right in your terminal. No sign-ups, no cloud, no credit card.
+> Clone it, run one command, and watch how AI actually works — right in your terminal, or for some demos right in your web browser. No sign-ups, no server of ours, no credit card.
 
 [![Links: K THE TECHMAN](https://img.shields.io/badge/K_THE_TECHMAN-All_links-D97706?style=flat-square&labelColor=181512)](https://khadir-syed.github.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-D97706?style=flat-square&labelColor=181512)](LICENSE)
@@ -31,9 +31,11 @@ is. You clone the repo, run a short command, and *see* the concept happen
 in plain text on your screen — no theory slides, no black box.
 
 It is **not** a framework you build on top of, and it is **not**
-production code. There is no LangChain, no CrewAI, no deployment, no
-Docker, no server. Every demo runs on your own laptop and does one thing
-clearly.
+production code. There is no LangChain, no CrewAI, no Docker, and no
+server of ours. Every demo runs on your own computer and does one thing
+clearly — in a terminal, or in your browser for the demos that have a
+[web version](web/), which GitHub Pages hands to your browser as plain
+files.
 
 ## The demos
 

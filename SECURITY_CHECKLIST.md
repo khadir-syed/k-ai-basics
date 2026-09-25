@@ -9,7 +9,7 @@ must pass all seven before it goes in:
 - [x] **Technically all good?** — the demo's `test_*.py` self-check passes, default mode gives the same output for the same input, and `--key` mode fails with a clear, non-crashing message when no key is set.
 - [x] **No other tech issues?** — tested end-to-end by actually running the demo, not just reading the code.
 - [x] **Documentation is up to date, along with required diagrams** — the relevant README(s) describe what the code does right now (not a planned future state), and any Mermaid diagram still matches the real flow.
-- [x] **The rest of this checklist passes** — every section below, including [Commit Hygiene](#commit-hygiene).
+- [x] **The rest of this checklist passes** — every section below, including [Web pages](#web-pages-web) if anything in `web/` changed.
 
 ## Secrets & Credentials
 - [x] No API keys, tokens, or passwords committed (`gitleaks`/`git-secrets` not installed locally — ran an equivalent manual scan of the commit diff for key/token patterns each time; only match found was the placeholder `your-key-here` in READMEs)
@@ -22,6 +22,17 @@ must pass all seven before it goes in:
 
 ## Data
 - [x] Sample/bundled data (e.g. `02-mini-rag/docs/`) contains no real PII, no scraped personal data
+
+## Web pages (`web/`)
+- [ ] Pages load the demo's own unchanged `.py` file — no copied or rewritten demo logic
+- [ ] Every page keeps its strict `Content-Security-Policy`: only its own files and the pinned Pyodide from jsDelivr; no inline scripts
+- [ ] Pyodide is pinned to one exact version, the same in `index.html` and `app.js`, and the `integrity="sha384-…"` fingerprint matches that version (see [web/README.md](web/README.md#upgrading-pyodide-read-this-first))
+- [ ] Text is shown with `textContent` only — no `innerHTML`, `eval`, or `document.write`
+- [ ] No cookies, storage, analytics or tracking; nothing a visitor types is sent anywhere
+- [ ] No `--key` mode and no API keys on the web
+- [ ] Examples use only made-up data (IDs starting `000`, test card numbers, `example.com` emails), and `python web/test_web.py` passes
+- [ ] The publishing workflow's actions are pinned to full commit codes, with least-privilege permissions
+- [ ] Tested locally in a browser (desktop and phone width) before pushing, and checked on the live site after
 
 ## Repo Hygiene
 - [x] LICENSE present

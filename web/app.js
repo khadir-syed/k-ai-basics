@@ -1,27 +1,16 @@
 // Runs Demo 09's real Python file (09-pii-redaction/redact.py) inside the
 // browser with Pyodide. Nothing is sent anywhere: the page only downloads
-// Pyodide and this repo's own files.
+// Pyodide and this repo's own files. All page text is in index.html.
 "use strict";
 
 const DEMO = "../09-pii-redaction/";
 const PYODIDE_URL = "https://cdn.jsdelivr.net/npm/pyodide@314.0.7/";
 const $ = (id) => document.getElementById(id);
-let T = {};
-let redactFn = null;
 
 async function fetchText(path) {
   const res = await fetch(path);
   if (!res.ok) throw new Error(`${path}: ${res.status}`);
   return res.text();
-}
-
-// Fill every [data-t] element with its sentence from strings.<lang>.json.
-async function loadStrings(lang) {
-  T = JSON.parse(await fetchText(`strings.${lang}.json`));
-  document.documentElement.lang = T.lang;
-  document.title = T.page_title;
-  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = T[el.dataset.t]; });
-  $("try").placeholder = T.try_placeholder;
 }
 
 // Put redact.py and its docs/ into Pyodide's in-browser file system.
@@ -60,6 +49,33 @@ function render(pre, text) {
   pre.hidden = false;
 }
 
+function makeRedact(py) {
+  const fn = py.globals.get("redact").redact;
+  return (text) => {
+    const result = fn(text);
+    const [redacted, counts] = result.toJs({ dict_converter: Object.fromEntries });
+    result.destroy();
+    return { redacted, counts };
+  };
+}
+
+// The 6 examples are written into the page so they show instantly.
+// Re-run each one through the real code, so the page can never quietly lie.
+function checkExamples(redact) {
+  let allOk = true;
+  for (const ex of document.querySelectorAll("#examples .ex")) {
+    const input = ex.querySelector(".ex-in").textContent;
+    const shown = ex.querySelector(".ex-out").textContent;
+    if (redact(input).redacted !== shown) {
+      allOk = false;
+      ex.classList.add("ex-stale");
+      ex.querySelector(".ex-why").prepend("⚠ ");
+    }
+  }
+  const live = $("examples-live");
+  live.textContent = allOk ? live.dataset.ok : live.dataset.bad;
+}
+
 function runDemo(py) {
   const lines = [];
   py.setStdout({ batched: (line) => lines.push(line) });
@@ -67,46 +83,53 @@ function runDemo(py) {
   render($("output"), lines.join("\n"));
   $("legend").hidden = false;
   $("explain").hidden = false;
-  $("run").textContent = T.run_again;
+  $("run").textContent = $("run").dataset.again;
 }
 
-function tryOwn() {
+function tryOwn(redact) {
   const text = $("try").value;
+  const found = $("try-found");
   if (!text.trim()) {
     $("try-output").replaceChildren();
-    $("try-found").textContent = "";
+    found.textContent = "";
     return;
   }
-  const result = redactFn(text);
-  const [redacted, counts] = result.toJs({ dict_converter: Object.fromEntries });
-  result.destroy();
-  const found = Object.entries(counts).filter(([, n]) => n).map(([k, n]) => `${k} (${n})`);
-  $("try-found").textContent = `${T.try_found} ${found.join(", ") || T.try_none}`;
+  const { redacted, counts } = redact(text);
+  const hits = Object.entries(counts).filter(([, n]) => n).map(([k, n]) => `${k} (${n})`);
+  found.textContent = `${found.dataset.label} ${hits.join(", ") || found.dataset.none}`;
   render($("try-output"), redacted);
 }
 
 async function main() {
-  await loadStrings("en");
-  const run = $("run");
-  run.disabled = true;
-  $("status").textContent = T.loading;
+  const status = $("status");
+  status.textContent = status.dataset.loading;
   let py;
   try {
     py = await loadPython();
   } catch (err) {
-    $("status").textContent = T.load_failed;
+    status.textContent = status.dataset.failed;
     console.error(err);
     return;
   }
-  $("status").textContent = "";
+  status.textContent = "";
+  const redact = makeRedact(py);
+  checkExamples(redact);
+
+  const run = $("run");
   run.disabled = false;
   run.addEventListener("click", () => runDemo(py));
-  redactFn = py.globals.get("redact").redact;
+
   const box = $("try");
   box.disabled = false;
-  box.value = T.try_example;
-  box.addEventListener("input", tryOwn);
-  tryOwn();
+  box.addEventListener("input", () => tryOwn(redact));
+  for (const chip of document.querySelectorAll("#chips .chip-btn")) {
+    chip.disabled = false;
+    chip.addEventListener("click", () => {
+      box.value = chip.dataset.try;
+      tryOwn(redact);
+      box.focus();
+    });
+  }
 }
 
 main();

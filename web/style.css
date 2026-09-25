@@ -96,4 +96,34 @@ textarea {
   text-align: center; color: var(--muted); font-size: 12px; letter-spacing: 1px;
   text-transform: uppercase; margin-top: 28px;
 }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* The 6 examples */
+.examples { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 10px; }
+.ex { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.ex p { margin: 0 0 6px; }
+.ex p:last-child { margin-bottom: 0; }
+.ex-what { font-weight: 700; }
+.ex-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.ex-flow code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px;
+  word-break: break-word;
+}
+.ex-flow code.redacted { background: #000; }
+.arrow { color: var(--muted); font-size: 13px; }
+.ex-why { font-size: 14px; color: var(--soft); }
+.ex-why.missed { color: #fca5a5; }
+.ex-stale { border-color: var(--missed); }
+.lesson { font-weight: 700; color: #fff; }
+
+/* Try it yourself */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.chip-btn {
+  background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 9999px;
+  padding: 6px 12px; font-size: 13px; cursor: pointer;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.chip-btn:hover { border-color: var(--orange); }
+.chip-btn:disabled { opacity: 0.5; cursor: wait; }
+.chip-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.try-label { font-weight: 700; margin: 8px 0 6px; }

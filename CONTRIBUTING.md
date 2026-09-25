@@ -2,9 +2,11 @@
 
 Thanks for your interest in contributing. This repository is a small
 collection of beginner-facing demos that show how core AI concepts work,
-one idea at a time, entirely in a terminal. Contributions should keep that
-goal in mind: no heavyweight frameworks, no deployment/hosting, and a
-default path that runs with zero API key and zero config.
+one idea at a time, in a terminal — and, for some demos, in the browser
+via the static pages in [`web/`](web/README.md). Contributions should keep
+that goal in mind: no heavyweight frameworks, no servers or paid hosting
+(only the static GitHub Pages site), and a default path that runs with
+zero API key and zero config.
 
 ## Before you open a pull request
 
