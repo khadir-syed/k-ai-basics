@@ -108,6 +108,29 @@ flowchart TB
     J ==>|"next step"| K(["k_ai-agent-skills\n(the full-power version)"])
 ```
 
+## How the pieces fit together
+
+Think of each demo as a recipe. You can cook it in two kitchens: your
+**terminal**, or your **web browser** — the browser gets a little kitchen
+of its own (Python rebuilt to run inside a web page). Either way, it's the
+same recipe: the demo's own `.py` file.
+
+Most demos never talk to an AI company at all. Some *can*, but only in the
+terminal, and only when **you** switch it on with `--key` and your own key.
+The web pages never do.
+
+```mermaid
+flowchart LR
+    You(["You"]) --> T["💻 Terminal\n(python …)"]
+    You --> W["🌐 Browser\n(web page, nothing to install)"]
+    W --> P["Python running inside\nyour browser (Pyodide)"]
+    T --> D["The demo's own .py file"]
+    P --> D
+    D --> N["Never talks to an AI:\n01 Tokens · 05 Context · 09 Redaction"]
+    D --> O["Can talk to a real AI —\nonly if YOU add --key\n(terminal only):\n02 · 03 · 04 · 06 · 07 · 08 · 10"]
+    O -.->|"your API key"| AI[("An AI company\n(Anthropic / OpenAI)")]
+```
+
 ## How to install and run a demo
 
 1. Make sure Python is installed on your computer.
