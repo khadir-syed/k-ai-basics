@@ -2,7 +2,9 @@
 what the real demo code produces. Runs instantly, no network.
 Run from the repo root with: python web/test_web.py
 """
+import contextlib
 import html
+import io
 import json
 import os
 import re
@@ -14,8 +16,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 sys.path.insert(0, os.path.join(ROOT, "09-pii-redaction"))
 sys.path.insert(0, os.path.join(ROOT, "07-prompt-playground"))
+sys.path.insert(0, os.path.join(ROOT, "03-agent-trace"))
+sys.path.insert(0, os.path.join(ROOT, "02-mini-rag"))
 from redact import redact  # noqa: E402
 import playground  # noqa: E402
+import trace as agent  # noqa: E402  (Demo 03's trace.py, not Python's own)
+import ask  # noqa: E402
 
 
 def read(path):
@@ -89,16 +95,59 @@ if shutil.which("node"):
 else:
     print("(node not installed: skipped the answer-formatting check)")
 
+# ---- Demo 03 ----------------------------------------------------------------
+page = read("03/index.html")
+examples = re.findall(r'<code class="ex-in">(.*?)</code>.*?<pre class="output ex-trace">(.*?)</pre>', page, re.S)
+assert len(examples) == 6, len(examples)
+for question, shown in examples:
+    question, shown = html.unescape(question), texts(r"(.*)", shown)[0]
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        agent.run_rule_based(question)
+    assert out.getvalue().rstrip("\n") == shown, (question, out.getvalue(), shown)
+
+chips = [html.unescape(c) for c in re.findall(r'data-try="(.*?)"', page)]
+assert chips == [html.unescape(q) for q, _ in examples], chips
+
+# ---- Demo 02 ----------------------------------------------------------------
+page = read("02/index.html")
+# The page's story list names exactly the story files in docs/.
+files = re.findall(r'<li data-file="(.*?)">', page)
+assert files == sorted(os.listdir(os.path.join(ROOT, "02-mini-rag", "docs"))), files
+titles = dict(zip(files, texts(r'<li data-file=".*?">(.*?)</li>', page)))
+
+examples = re.findall(
+    r'<code class="ex-in">(.*?)</code>\s*</p>\s*<div class="found" data-file="(.*?)">(.*?)</div>', page, re.S)
+assert len(examples) == 6, len(examples)
+chips = [html.unescape(c) for c in re.findall(r'data-try="(.*?)"', page)]
+assert chips == [html.unescape(q) for q, _, _ in examples], chips
+
+# ponytail: ask.py needs scikit-learn; run this with Demo 02's .venv switched on.
+try:
+    import sklearn  # noqa: F401
+except ImportError:
+    print("(scikit-learn not installed: skipped the Demo 02 checks; run with 02-mini-rag's .venv on)")
+else:
+    chunks = ask.load_chunks()
+    for question, file, found in examples:
+        src, text, score = ask.rank_chunks(html.unescape(question), chunks)[0]
+        if score == 0:
+            assert file == "", (question, "expected nothing found")
+            continue
+        assert file == src, (question, src, file)
+        assert texts(r'<p class="found-text">(.*?)</p>', found) == [text], question
+        assert texts(r'<p class="found-story">(.*?)</p>', found) == [f"Found in: {titles[src]}"], question
+
 # ---- All pages --------------------------------------------------------------
 # Every demo page uses the same pinned Pyodide, in its HTML and its app.js.
 versions = set()
-for demo in ("07", "09"):
-    versions |= set(re.findall(r"pyodide@([\d.]+)/", read(f"{demo}/index.html") + read(f"{demo}/app.js")))
+for demo in ("02", "03", "07", "09"):
+    versions |= set(re.findall(r"pyodide(?:@|/v)([\d.]+)/", read(f"{demo}/index.html") + read(f"{demo}/app.js")))
 assert len(versions) == 1, versions
 
 # The home page links to every demo page.
 home = read("index.html")
-for demo in ("07", "09"):
+for demo in ("02", "03", "07", "09"):
     assert f'href="{demo}/"' in home, demo
 
 print("All checks passed.")

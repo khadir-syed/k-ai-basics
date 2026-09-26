@@ -54,7 +54,7 @@ files.
 
 ### 🌐 No terminal? Try it in your browser
 
-Not a coder? **Demos 07 and 09 run right in your web browser** — nothing
+Not a coder? **Demos 02, 03, 07 and 09 run right in your web browser** — nothing
 to install, and they work on a phone:
 **https://khadir-syed.github.io/k_ai-basics/web/**
 

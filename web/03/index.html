@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files, the pinned Pyodide from jsDelivr and the
+       GitHub profile photo (the tab icon) may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' https://avatars.githubusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Watch an AI agent decide which tool to use, step by step — and see how a simple rule picks the wrong one. Runs in your browser, nothing to install.">
+  <title>Watch an AI agent think — k_ai-basics</title>
+  <link rel="icon" type="image/jpeg" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=64">
+  <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=180">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
+  <main class="wrap">
+    <a class="back" href="../">← All demos</a>
+    <header class="hero">
+      <span class="badge" data-t="badge">k_ai-basics · Demo 03 · AI agents</span>
+      <h1 data-t="title">Watch an AI agent think</h1>
+      <p class="subtitle" data-t="subtitle">Pick a tool, use it, answer</p>
+    </header>
+
+    <section class="card">
+      <p data-t="intro_1">Imagine you ask a friend a question. Before answering, they pause: "Do I know this, or do I need my calculator, or should I look it up?" Then they do that — and then they answer.</p>
+      <p data-t="intro_2">That pause is what people mean when they call an AI an agent. It doesn't just answer. It first decides how to answer, sometimes using a tool along the way.</p>
+      <p data-t="intro_3">The agent on this page has two tools: a calculator, and a small book of 6 trivia facts. It picks a tool with a simple rule, not real thinking — so you can see every step, including the wrong turns.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="examples_heading">6 examples: which tool did it pick?</h2>
+      <p data-t="examples_help">Each example shows a question, then every step the agent took.</p>
+      <p class="muted" data-t="legend">
+        <span class="tag">[THINKING]</span> deciding what to do ·
+        <span class="tag">[TOOL CALL]</span> the tool it picked, and what it typed in ·
+        <span class="tag">[TOOL RESULT]</span> what the tool gave back ·
+        <span class="tag">[FINAL ANSWER]</span> what you would see
+      </p>
+      <ol class="examples" id="examples">
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">what is 12 times 4</code></p>
+          <pre class="output ex-trace"><span class="tag">[THINKING]</span> Checking whether this needs a tool...
+<span class="tag">[TOOL CALL]</span> calculator("12 * 4")
+<span class="tag">[TOOL RESULT]</span> 48
+<span class="tag">[FINAL ANSWER]</span> 12 * 4 = 48</pre>
+          <p class="ex-why caught" data-t="ex1_why">✅ Right tool. It saw numbers and the word "times", so it used the calculator.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">what is twelve times four</code></p>
+          <pre class="output ex-trace"><span class="tag">[THINKING]</span> Checking whether this needs a tool...
+<span class="tag">[THINKING]</span> No tool matches — not math, not one of my trivia topics.
+<span class="tag">[FINAL ANSWER]</span> I can only do math (e.g. "12 * 4") or answer a handful of trivia questions. Try one of those!</pre>
+          <p class="ex-why missed" data-t="ex2_why">❌ No tool. It's the same question, with the numbers written as words. The rule only spots digits like 12, so it gives up.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">what is the fastest land animal</code></p>
+          <pre class="output ex-trace"><span class="tag">[THINKING]</span> Checking whether this needs a tool...
+<span class="tag">[TOOL CALL]</span> search_trivia("what is the fastest land animal")
+<span class="tag">[TOOL RESULT]</span> The cheetah, which can sprint up to about 100-120 km/h (60-75 mph) in short bursts.
+<span class="tag">[FINAL ANSWER]</span> The cheetah, which can sprint up to about 100-120 km/h (60-75 mph) in short bursts.</pre>
+          <p class="ex-why caught" data-t="ex3_why">✅ Right tool. The question matches one of its 6 trivia facts, so it looked it up.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">how many moons does saturn have</code></p>
+          <pre class="output ex-trace"><span class="tag">[THINKING]</span> Checking whether this needs a tool...
+<span class="tag">[TOOL CALL]</span> search_trivia("how many moons does saturn have")
+<span class="tag">[TOOL RESULT]</span> Jupiter has over 95 confirmed moons, and astronomers keep finding more. Only Saturn has more.
+<span class="tag">[FINAL ANSWER]</span> Jupiter has over 95 confirmed moons, and astronomers keep finding more. Only Saturn has more.</pre>
+          <p class="ex-why missed" data-t="ex4_why">❌ Wrong answer, said with confidence. You asked about Saturn, but it has no Saturn fact. "How many moons … have" matches its Jupiter fact closely enough, so it answers about Jupiter instead.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">tell me a joke</code></p>
+          <pre class="output ex-trace"><span class="tag">[THINKING]</span> Checking whether this needs a tool...
+<span class="tag">[THINKING]</span> No tool matches — not math, not one of my trivia topics.
+<span class="tag">[FINAL ANSWER]</span> I can only do math (e.g. "12 * 4") or answer a handful of trivia questions. Try one of those!</pre>
+          <p class="ex-why caught" data-t="ex5_why">✅ Honest. None of its tools can tell a joke, so it says so instead of making something up.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">I have 3 apples and eat 1, how many are left?</code></p>
+          <pre class="output ex-trace"><span class="tag">[THINKING]</span> Checking whether this needs a tool...
+<span class="tag">[TOOL CALL]</span> search_trivia("I have 3 apples and eat 1, how many are left?")
+<span class="tag">[TOOL RESULT]</span> Jupiter has over 95 confirmed moons, and astronomers keep finding more. Only Saturn has more.
+<span class="tag">[FINAL ANSWER]</span> Jupiter has over 95 confirmed moons, and astronomers keep finding more. Only Saturn has more.</pre>
+          <p class="ex-why missed" data-t="ex6_why">❌ Wrong tool. A person sees an easy sum, but there's no "minus" or "−" for the calculator rule to spot. "How many … have" looks like the Jupiter question, so you get a fact about moons.</p>
+        </li>
+      </ol>
+      <p class="lesson" data-t="examples_lesson">The lesson: an agent is only as good as the way it picks its tools. This one follows a simple rule, so it misses questions written a little differently — and can pick the wrong tool without noticing. Real AI agents let the AI itself decide, which is much smarter, but they can still pick wrong.</p>
+      <p id="examples-live" class="muted" role="status" data-ok="✓ All 6 examples were just checked live against the real demo code, in your browser." data-bad="⚠ Some examples no longer match the demo code — the lines marked ⚠ need updating."></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="try_heading">Try it yourself</h2>
+      <p data-t="try_help">Tap an example to put it in the box, then change it a little and watch the steps change. Can you find another question that tricks it?</p>
+      <div class="chips" id="chips">
+        <button type="button" class="chip-btn" disabled data-try="what is 12 times 4">what is 12 times 4</button>
+        <button type="button" class="chip-btn" disabled data-try="what is twelve times four">what is twelve times four</button>
+        <button type="button" class="chip-btn" disabled data-try="what is the fastest land animal">what is the fastest land animal</button>
+        <button type="button" class="chip-btn" disabled data-try="how many moons does saturn have">how many moons does saturn have</button>
+        <button type="button" class="chip-btn" disabled data-try="tell me a joke">tell me a joke</button>
+        <button type="button" class="chip-btn" disabled data-try="I have 3 apples and eat 1, how many are left?">I have 3 apples and eat 1, how many are left?</button>
+      </div>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the agent ready in your browser… (a one-time download of about 13 MB — after that it's quick)"
+         data-failed="Sorry — the agent couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub.">Getting the agent ready in your browser…</p>
+      <noscript><p class="warning">This part needs JavaScript switched on in your browser. The 6 examples above work without it.</p></noscript>
+      <label class="try-label" for="try" data-t="try_label">Your question:</label>
+      <textarea id="try" rows="2" disabled spellcheck="false" placeholder="Tap an example above, or type your own question"></textarea>
+      <p class="try-label" data-t="try_result">What the agent does:</p>
+      <pre id="try-output" class="output" aria-live="polite"></pre>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved. This page never talks to an AI — the rule-based agent is all Python, running on your device.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub. In a terminal, it can also let a real AI pick the tools.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/03-agent-trace" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/03-agent-trace#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
+    </section>
+
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
+  </main>
+</body>
+</html>

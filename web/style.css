@@ -216,3 +216,25 @@ textarea {
 .check-list li { padding: 4px 0; color: var(--soft); }
 .check-list .pass b { color: #86efac; }
 .check-list .fail b { color: #fca5a5; }
+
+/* Demo 03: each example's steps */
+.ex .ex-trace { margin: 6px 0 8px; }
+
+/* Demo 02: stories, found paragraphs and match scores */
+.stories { margin: 0 0 12px; padding-left: 22px; color: var(--soft); }
+.found { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 6px 0 8px; }
+.ex .found p { margin: 0 0 4px; }
+.found p:last-child { margin-bottom: 0; }
+.found-story { font-size: 13px; font-weight: 700; color: var(--amber); }
+.found-text { font-size: 14px; color: var(--soft); }
+.found-text.none { color: var(--muted); }
+.matches { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.match {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px;
+}
+.match-story { font-size: 13px; font-weight: 700; }
+.match-pct { font-size: 13px; font-weight: 700; color: var(--amber-soft); font-variant-numeric: tabular-nums; }
+.bar-track { grid-column: 1 / -1; height: 6px; background: var(--line); border-radius: 9999px; overflow: hidden; }
+.bar { display: block; height: 100%; background: var(--orange); border-radius: 9999px; }
+.match-text { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }

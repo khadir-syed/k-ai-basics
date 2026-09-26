@@ -1,5 +1,8 @@
 # 2. Mini-RAG in a Terminal
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/02/
+
 ## What is this?
 
 Imagine you have a stack of storybooks and a friend asks you a question. You

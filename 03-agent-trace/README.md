@@ -1,5 +1,8 @@
 # 3. Agent Trace CLI
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/03/
+
 ## What is this?
 
 Imagine you ask a friend a question. Before answering, your friend thinks
