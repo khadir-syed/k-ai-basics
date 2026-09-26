@@ -238,3 +238,21 @@ textarea {
 .bar-track { grid-column: 1 / -1; height: 6px; background: var(--line); border-radius: 9999px; overflow: hidden; }
 .bar { display: block; height: 100%; background: var(--orange); border-radius: 9999px; }
 .match-text { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+
+/* Demos 08 and 10: the filter switch and the handoff choice */
+.options { border: 0; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.options legend { padding: 0; width: 100%; }
+.option, .options label { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 15px; cursor: pointer; }
+.option input, .options input { accent-color: var(--orange); width: 18px; height: 18px; }
+.option input:focus-visible, .options input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+/* Demo 10: the drafted form is indented like in a terminal, so keep each line
+   whole and let the box scroll sideways instead of wrapping it into a mess. */
+.output.keep-lines { white-space: pre; word-break: normal; }
+
+/* Demo 06: the saved AI answers, both sides */
+.ai-answer {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; margin: 6px 0 8px; font-size: 14px; color: var(--soft); white-space: pre-line;
+}
+.ex .ai-answer { margin: 6px 0 8px; }
+.side-head { font-size: 14px; font-weight: 700; }

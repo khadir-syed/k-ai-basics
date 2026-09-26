@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files, the pinned Pyodide from jsDelivr and the
+       GitHub profile photo (the tab icon) may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' https://avatars.githubusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Watch two AI agents pass work between them — and see where the handoff can go wrong. Runs in your browser, nothing to install.">
+  <title>Two agents, one job — k_ai-basics</title>
+  <link rel="icon" type="image/jpeg" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=64">
+  <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=180">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
+  <main class="wrap">
+    <a class="back" href="../">← All demos</a>
+    <header class="hero">
+      <span class="badge" data-t="badge">k_ai-basics · Demo 10 · Multi-agent</span>
+      <h1 data-t="title">Two agents, one job</h1>
+      <p class="subtitle" data-t="subtitle">Watch AI agents pass work to each other</p>
+    </header>
+
+    <section class="card">
+      <p data-t="intro_1">Think about visiting a doctor's office. First the receptionist listens and fills in a form: what's wrong, when it started. Then they hand the form to the nurse, who reads it, decides how urgent you are, and asks about anything the form is missing.</p>
+      <p data-t="intro_2">Real AI systems often work the same way. Instead of one AI doing everything, several agents each do one job and pass the work along. That's what "multi-agent" means. On this page, two agents turn a messy bug report into a tidy one:</p>
+      <ul class="stories">
+        <li><b>Agent 1, the Drafter</b> — fills in a bug-report form from your words: title, description, severity, steps, device.</li>
+        <li><b>Agent 2, Triage</b> — reads the form, decides how urgent it is (HIGH, MEDIUM or LOW), and flags what's missing.</li>
+      </ul>
+      <p data-t="intro_3">The moment the form passes from one agent to the other is the handoff. It can go as JSON — a strict format that's checked before it's passed on — or as plain text, which nobody checks. Here, both agents follow simple rules, not real thinking, so you can see every step.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="examples_heading">6 examples: how urgent is it?</h2>
+      <p data-t="examples_help">Each example shows a bug report, the form the Drafter filled in, the handoff, and what Triage decided.</p>
+      <ol class="examples" id="examples">
+        <li class="ex" data-handoff="json">
+          <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in">the app crashes when I upload big files</code></p>
+          <pre class="output ex-trace keep-lines">📋 Rule-based — both agents follow simple, visible rules.
+Handoff format: json
+
+<span class="tag">[AGENT 1: Drafter]</span>  Received: "the app crashes when I upload big files"
+<span class="tag">[AGENT 1: Drafter]</span>  Output →
+                    {
+                      "title": "The app crashes when I upload big files",
+                      "description": "the app crashes when I upload big files",
+                      "severity": "unknown",
+                      "steps": "not provided",
+                      "environment": "not provided"
+                    }
+<span class="tag">[HANDOFF]</span> Passing draft to Triage Agent as JSON...
+<span class="tag">[HANDOFF]</span> Checked: valid JSON with all 5 fields ✓
+<span class="tag">[AGENT 2: Triage]</span>   Reviewing draft...
+<span class="tag">[AGENT 2: Triage]</span>   Priority: HIGH ("crash" reported)
+<span class="tag">[AGENT 2: Triage]</span>   Missing info flagged: "steps to reproduce", "device / browser", "file size tested"
+<span class="tag">[FINAL OUTPUT]</span> Structured, triaged bug report ready for a human.</pre>
+          <p class="ex-why caught" data-t="ex1_why">✅ HIGH, rightly: "crash" is a HIGH word. Triage also asks for the 3 things the report doesn't say: how to make it happen, which device, and how big the file was.</p>
+        </li>
+        <li class="ex" data-handoff="json">
+          <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in">Checkout is slow in Chrome. Steps: 1. add item 2. click pay</code></p>
+          <pre class="output ex-trace keep-lines">📋 Rule-based — both agents follow simple, visible rules.
+Handoff format: json
+
+<span class="tag">[AGENT 1: Drafter]</span>  Received: "Checkout is slow in Chrome. Steps: 1. add item 2. click pay"
+<span class="tag">[AGENT 1: Drafter]</span>  Output →
+                    {
+                      "title": "Checkout is slow in Chrome.",
+                      "description": "Checkout is slow in Chrome. Steps: 1. add item 2. click pay",
+                      "severity": "unknown",
+                      "steps": "see description",
+                      "environment": "chrome"
+                    }
+<span class="tag">[HANDOFF]</span> Passing draft to Triage Agent as JSON...
+<span class="tag">[HANDOFF]</span> Checked: valid JSON with all 5 fields ✓
+<span class="tag">[AGENT 2: Triage]</span>   Reviewing draft...
+<span class="tag">[AGENT 2: Triage]</span>   Priority: MEDIUM ("slow" reported)
+<span class="tag">[AGENT 2: Triage]</span>   Missing info flagged: none
+<span class="tag">[FINAL OUTPUT]</span> Structured, triaged bug report ready for a human.</pre>
+          <p class="ex-why caught" data-t="ex2_why">✅ MEDIUM ("slow"), and nothing missing: the Drafter spotted the browser (Chrome) and the steps, and wrote them into the form.</p>
+        </li>
+        <li class="ex" data-handoff="json">
+          <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in">The settings button colour is slightly off on my iPhone</code></p>
+          <pre class="output ex-trace keep-lines">📋 Rule-based — both agents follow simple, visible rules.
+Handoff format: json
+
+<span class="tag">[AGENT 1: Drafter]</span>  Received: "The settings button colour is slightly off on my iPhone"
+<span class="tag">[AGENT 1: Drafter]</span>  Output →
+                    {
+                      "title": "The settings button colour is slightly off on my iPhone",
+                      "description": "The settings button colour is slightly off on my iPhone",
+                      "severity": "unknown",
+                      "steps": "not provided",
+                      "environment": "iphone"
+                    }
+<span class="tag">[HANDOFF]</span> Passing draft to Triage Agent as JSON...
+<span class="tag">[HANDOFF]</span> Checked: valid JSON with all 5 fields ✓
+<span class="tag">[AGENT 2: Triage]</span>   Reviewing draft...
+<span class="tag">[AGENT 2: Triage]</span>   Priority: LOW (no crash, error or slowness mentioned)
+<span class="tag">[AGENT 2: Triage]</span>   Missing info flagged: "steps to reproduce"
+<span class="tag">[FINAL OUTPUT]</span> Structured, triaged bug report ready for a human.</pre>
+          <p class="ex-why caught" data-t="ex3_why">✅ LOW, rightly. A slightly wrong colour is worth fixing, but not urgent.</p>
+        </li>
+        <li class="ex" data-handoff="json">
+          <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in">the app keeps closing by itself when I open photos</code></p>
+          <pre class="output ex-trace keep-lines">📋 Rule-based — both agents follow simple, visible rules.
+Handoff format: json
+
+<span class="tag">[AGENT 1: Drafter]</span>  Received: "the app keeps closing by itself when I open photos"
+<span class="tag">[AGENT 1: Drafter]</span>  Output →
+                    {
+                      "title": "The app keeps closing by itself when I open photos",
+                      "description": "the app keeps closing by itself when I open photos",
+                      "severity": "unknown",
+                      "steps": "not provided",
+                      "environment": "not provided"
+                    }
+<span class="tag">[HANDOFF]</span> Passing draft to Triage Agent as JSON...
+<span class="tag">[HANDOFF]</span> Checked: valid JSON with all 5 fields ✓
+<span class="tag">[AGENT 2: Triage]</span>   Reviewing draft...
+<span class="tag">[AGENT 2: Triage]</span>   Priority: LOW (no crash, error or slowness mentioned)
+<span class="tag">[AGENT 2: Triage]</span>   Missing info flagged: "steps to reproduce", "device / browser"
+<span class="tag">[FINAL OUTPUT]</span> Structured, triaged bug report ready for a human.</pre>
+          <p class="ex-why missed" data-t="ex4_why">❌ Too low. An app that closes by itself has crashed — but the report never says "crash", so the rule calls it LOW.</p>
+        </li>
+        <li class="ex" data-handoff="json">
+          <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in">my payment page looks great, just a small typo</code></p>
+          <pre class="output ex-trace keep-lines">📋 Rule-based — both agents follow simple, visible rules.
+Handoff format: json
+
+<span class="tag">[AGENT 1: Drafter]</span>  Received: "my payment page looks great, just a small typo"
+<span class="tag">[AGENT 1: Drafter]</span>  Output →
+                    {
+                      "title": "My payment page looks great, just a small typo",
+                      "description": "my payment page looks great, just a small typo",
+                      "severity": "unknown",
+                      "steps": "not provided",
+                      "environment": "not provided"
+                    }
+<span class="tag">[HANDOFF]</span> Passing draft to Triage Agent as JSON...
+<span class="tag">[HANDOFF]</span> Checked: valid JSON with all 5 fields ✓
+<span class="tag">[AGENT 2: Triage]</span>   Reviewing draft...
+<span class="tag">[AGENT 2: Triage]</span>   Priority: HIGH ("payment" reported)
+<span class="tag">[AGENT 2: Triage]</span>   Missing info flagged: "steps to reproduce", "device / browser"
+<span class="tag">[FINAL OUTPUT]</span> Structured, triaged bug report ready for a human.</pre>
+          <p class="ex-why missed" data-t="ex5_why">❌ False alarm. It's only a typo, but "payment" is on the HIGH list, so it jumps to the top of the queue.</p>
+        </li>
+        <li class="ex" data-handoff="text">
+          <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in">the app crashes when I upload big files</code></p>
+          <pre class="output ex-trace keep-lines">📋 Rule-based — both agents follow simple, visible rules.
+Handoff format: text
+
+<span class="tag">[AGENT 1: Drafter]</span>  Received: "the app crashes when I upload big files"
+<span class="tag">[AGENT 1: Drafter]</span>  Output →
+                    Title: The app crashes when I upload big files
+                    Description: the app crashes when I upload big files
+                    Severity: unknown
+                    Steps: not provided
+                    Environment: not provided
+<span class="tag">[HANDOFF]</span> Passing draft to Triage Agent as plain text...
+<span class="tag">[HANDOFF]</span> Nothing checks its shape — the Triage Agent reads it as-is.
+<span class="tag">[AGENT 2: Triage]</span>   Reviewing draft...
+<span class="tag">[AGENT 2: Triage]</span>   Priority: HIGH ("crash" reported)
+<span class="tag">[AGENT 2: Triage]</span>   Missing info flagged: "steps to reproduce", "device / browser", "file size tested"
+<span class="tag">[FINAL OUTPUT]</span> Structured, triaged bug report ready for a human.</pre>
+          <p class="ex-why caught" data-t="ex6_why">✅ The same bug as example 1, handed over as plain text instead of JSON. Same result — but this time nothing checked the form before passing it on.</p>
+        </li>
+      </ol>
+      <p class="lesson" data-t="examples_lesson">The lesson: each agent can only be as good as its own rules — and a mistake in one gets passed to the next. Real AI agents understand far more than a word list, but they make mistakes too, and the handoff is where those mistakes travel.</p>
+      <p id="examples-live" class="muted" role="status" data-ok="✓ All 6 examples were just checked live against the real demo code, in your browser." data-bad="⚠ Some examples no longer match the demo code — the lines marked ⚠ need updating."></p>
+    </section>
+
+    <section class="card" id="real-run">
+      <h2 data-t="real_heading">What a real AI did</h2>
+      <p data-t="real_intro">On this page, both agents are simple rules, so the Drafter always fills in the form perfectly. A real AI might not: it could add chatty words around its JSON, or leave out a box. Then the JSON check stops the handoff with [HANDOFF FAILED], and the broken form never reaches Triage. So what really happens when two real AIs do this job? Here's one real run.</p>
+      <p class="muted" data-t="real_when">📅 A real run in the terminal (with --key) on 26 September 2026, using gpt-oss-20b, run by Groq. It's saved here, because this page never talks to an AI. A real AI can answer differently every time.</p>
+      <p class="ex-what"><span data-t="ex_asked">Bug report:</span> <code class="ex-in" id="real-report">When I click "Save" the page says: Error "null" -- and then the app freezes. Also the logo looks weird.</code></p>
+      <p class="try-label" data-t="real_draft_label">Agent 1, the Drafter (a real AI), sent back:</p>
+      <pre class="output" id="real-draft">{"title":"Save button triggers null error and application freeze, logo distortion","description":"When the user clicks the 'Save' button, the page displays an error message containing \"null\" and subsequently freezes. Additionally, the application’s logo appears distorted.","severity":"unknown","steps":["Navigate to the relevant page in the application.","Click the 'Save' button.","Observe the error message that reads \"null\" and the application freezing.","Notice the logo appears distorted or incorrect."],"environment":"not provided"}</pre>
+      <p class="try-label" data-t="real_check_label">The handoff check, run live on that reply in your browser:</p>
+      <p id="real-check" class="muted" role="status"
+         data-ok="✓ Valid JSON with all 5 fields — passed. The form goes on to Triage."
+         data-bad="⚠ The check no longer gives the result described below — this part needs updating.">✓ Valid JSON with all 5 fields — passed. The form goes on to Triage.</p>
+      <p class="try-label" data-t="real_triage_label">Agent 2, Triage (a real AI), said:</p>
+      <pre class="output" id="real-triage">Priority: HIGH, app freezes on critical action causing data loss risk.
+Missing: environment</pre>
+      <ul class="check-list">
+        <li class="ex-why caught" data-t="real_good">✅ Good work: it turned a messy sentence into a clear title and description, and Triage asked which device was used.</li>
+        <li class="ex-why missed" data-t="real_steps">❌ Made-up steps. The report gives no steps, and the Drafter was told to write "not provided" — instead it invented 4 steps, like "Navigate to the relevant page in the application."</li>
+        <li class="ex-why missed" data-t="real_risk">❌ A made-up risk. Triage says "data loss risk", but nobody mentioned losing anything.</li>
+        <li class="ex-why missed" data-t="real_passed">❌ And the check let it all through. It only makes sure the 5 boxes are there. It didn't notice that "steps" came back as a list instead of text — and it can't tell a true step from an invented one.</li>
+      </ul>
+      <p class="lesson" data-t="real_lesson">The lesson: a strict format catches a broken form — not wrong information. Real AI agents write far better reports than simple rules, but they can make things up, and the next agent passes it on as fact. That's why real systems still have a person check anything important.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="try_heading">Try it yourself</h2>
+      <p data-t="try_help">Tap an example to put it in the box, then describe your own bug. Try the words "crash", "slow" or "payment", a device like "iPhone", or "Steps: 1." — and watch how Triage changes its mind.</p>
+      <div class="chips" id="chips">
+        <button type="button" class="chip-btn" disabled data-try="the app crashes when I upload big files">the app crashes when I upload big files</button>
+        <button type="button" class="chip-btn" disabled data-try="Checkout is slow in Chrome. Steps: 1. add item 2. click pay">Checkout is slow in Chrome. Steps: 1. add item 2. click pay</button>
+        <button type="button" class="chip-btn" disabled data-try="The settings button colour is slightly off on my iPhone">The settings button colour is slightly off on my iPhone</button>
+        <button type="button" class="chip-btn" disabled data-try="the app keeps closing by itself when I open photos">the app keeps closing by itself when I open photos</button>
+        <button type="button" class="chip-btn" disabled data-try="my payment page looks great, just a small typo">my payment page looks great, just a small typo</button>
+      </div>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the agents ready in your browser… (a one-time download of about 13 MB — after that it's quick)"
+         data-failed="Sorry — the agents couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub.">Getting the agents ready in your browser…</p>
+      <noscript><p class="warning">This part needs JavaScript switched on in your browser. The 6 examples above work without it.</p></noscript>
+      <label class="try-label" for="try" data-t="try_label">Your bug report:</label>
+      <textarea id="try" rows="2" disabled spellcheck="false" placeholder="Tap an example above, or describe a bug in your own words"></textarea>
+      <fieldset class="options" id="handoff">
+        <legend class="try-label" data-t="handoff_label">Hand the form over as:</legend>
+        <label><input type="radio" name="handoff" value="json" checked disabled> <span data-t="handoff_json">JSON (checked)</span></label>
+        <label><input type="radio" name="handoff" value="text" disabled> <span data-t="handoff_text">plain text (not checked)</span></label>
+      </fieldset>
+      <p class="try-label" data-t="try_result">What the agents do:</p>
+      <pre id="try-output" class="output keep-lines" aria-live="polite"></pre>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved. This page never talks to an AI — both agents are a few lines of Python, running on your device.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub. In a terminal, both agents can also be real AI calls.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/10-multi-agent-handoff" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/10-multi-agent-handoff#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
+    </section>
+
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
+  </main>
+</body>
+</html>

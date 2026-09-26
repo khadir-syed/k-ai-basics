@@ -1,5 +1,8 @@
 # 10. Multi-Agent Handoff
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/10/
+
 ## What is this?
 
 Think about visiting a doctor's office. You don't see one person who does

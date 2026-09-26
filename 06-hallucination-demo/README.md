@@ -1,5 +1,8 @@
 # 6. Hallucination Demo
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/06/
+
 ## What is this?
 
 Imagine two kids are asked: *"What's the name of the mayor's cat in

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files, the pinned Pyodide (with scikit-learn) from jsDelivr and the
+       GitHub profile photo (the tab icon) may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' https://avatars.githubusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Ask a real AI about a made-up town: without documents it makes things up; with them, it reads the answer. Runs in your browser, nothing to install.">
+  <title>When AI makes things up — k_ai-basics</title>
+  <link rel="icon" type="image/jpeg" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=64">
+  <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=180">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
+  <main class="wrap">
+    <a class="back" href="../">← All demos</a>
+    <header class="hero">
+      <span class="badge" data-t="badge">k_ai-basics · Demo 06 · Hallucination</span>
+      <h1 data-t="title">When AI makes things up</h1>
+      <p class="subtitle" data-t="subtitle">Guessing vs. looking it up</p>
+    </header>
+
+    <section class="card">
+      <p data-t="intro_1">Imagine two kids are asked: "What's the name of the mayor's cat in Puddlewick?" The first kid has no book. They've never heard of Puddlewick, but they don't want to look silly — so they say "Whiskers!", loudly, with a big smile. It sounds sure. It's a guess. The second kid has the town's guidebook. They find the right page and read out: "Sir Pickles." That's not a guess — it's written down.</p>
+      <p data-t="intro_2">When an AI makes something up and says it confidently, people call it a hallucination. This page asks a real AI the same question twice: once with nothing to go on, and once after looking things up first — the idea from Demo 02.</p>
+      <p data-t="intro_3">Puddlewick is completely made up. It exists only in 3 short files, so no AI could have learned about it anywhere else — without them, it can't know:</p>
+      <ul class="stories" id="docs">
+        <li data-file="puddlewick_festival.txt">The Great Puddle Jump Festival</li>
+        <li data-file="puddlewick_lighthouse.txt">Puddlewick Lighthouse</li>
+        <li data-file="puddlewick_town.txt">The town of Puddlewick</li>
+      </ul>
+      <p data-t="intro_4">The look-up side only trusts a paragraph that matches the question by at least 10%. Below that, it's usually just one everyday word in common — so the honest answer is "I don't know".</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="examples_heading">6 questions, asked both ways</h2>
+      <p class="muted" data-t="recorded_note">📅 The AI answers are from a real run on 26 September 2026, using gpt-oss-20b, run by Groq. They're saved here, because this page never talks to an AI. A real AI can answer differently every time — and a different run might make up a different name.</p>
+      <ol class="examples" id="examples">
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">What was the name of the lighthouse keeper in Puddlewick, Cornwall?</code></p>
+          <div class="side">
+            <p class="side-head" data-t="side1_head">1. No documents. The AI answered:</p>
+            <p class="ai-answer">The lighthouse keeper at Puddlewick in Cornwall was Thomas J. White. He was stationed there from 1877 until his retirement in 1884, during which time he maintained the beacon that guided ships around the treacherous western coast.</p>
+          </div>
+          <div class="side">
+            <p class="side-head" data-t="side2_head">2. Look it up first. The best paragraph it found:</p>
+            <div class="found" data-file="puddlewick_lighthouse.txt" data-count="3">
+              <p class="found-story">Puddlewick Lighthouse · <span class="found-pct">29.6%</span> <span data-t="match_word">match</span></p>
+              <p class="found-text">The lighthouse keeper is Mr. Oswin Fairweather, who has climbed its 142 steps every evening for thirty years to check the lamp. He says he has never once missed a day.</p>
+            </div>
+            <p class="side-head" data-t="side2_then">Given the paragraphs that matched, the same AI answered:</p>
+            <p class="ai-answer">The lighthouse keeper in Puddlewick, Cornwall is Mr. Oswin Fairweather. He has climbed the 142 steps each evening for thirty years and never missed a day.</p>
+          </div>
+          <p class="ex-why missed" data-t="ex1_why">❌ Made up. Puddlewick doesn't exist, so "Thomas J. White" and the years 1877–1884 were invented — with exact dates that make the guess sound like a fact. ✅ With the documents, it found the real keeper: Mr. Oswin Fairweather.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">Who is the mayor of Puddlewick in Devon?</code></p>
+          <div class="side">
+            <p class="side-head" data-t="side1_head">1. No documents. The AI answered:</p>
+            <p class="ai-answer">Puddlewick is a very small hamlet in Devon and does not have its own municipal government or a mayor. It falls under the local parish council and is governed by the North Devon Borough Council for any civic matters. Therefore, there is no mayor to name for Puddlewick.</p>
+          </div>
+          <div class="side">
+            <p class="side-head" data-t="side2_head">2. Look it up first. The best paragraph it found:</p>
+            <div class="found" data-file="puddlewick_town.txt" data-count="3">
+              <p class="found-story">The town of Puddlewick · <span class="found-pct">55.1%</span> <span data-t="match_word">match</span></p>
+              <p class="found-text">The mayor of Puddlewick is Mayor Hazel Brambleton. She has been mayor for eleven years and rides to the town hall every morning on a green tricycle with a wicker basket on the front.</p>
+            </div>
+            <p class="side-head" data-t="side2_then">Given the paragraphs that matched, the same AI answered:</p>
+            <p class="ai-answer">The mayor of Puddlewick in Devon is Mayor Hazel Brambleton. She has served as mayor for eleven years and is known for riding a green tricycle to the town hall each morning.</p>
+          </div>
+          <p class="ex-why missed" data-t="ex2_why">❌ Made up — in a sneakier way. It didn't invent a name: it invented a whole story about the town having no mayor, with real-sounding councils. It sounds careful, but none of it is true. ✅ With the documents: Mayor Hazel Brambleton.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">What is the name of the mayor's cat in Puddlewick?</code></p>
+          <div class="side">
+            <p class="side-head" data-t="side1_head">1. No documents. The AI answered:</p>
+            <p class="ai-answer">In the quaint town of Puddlewick, the mayor’s beloved feline is called Whiskers. Whiskers is well known for prowling the council chambers and keeping a watchful eye on the city’s bustling market stalls.</p>
+          </div>
+          <div class="side">
+            <p class="side-head" data-t="side2_head">2. Look it up first. The best paragraph it found:</p>
+            <div class="found" data-file="puddlewick_town.txt" data-count="2">
+              <p class="found-story">The town of Puddlewick · <span class="found-pct">47.8%</span> <span data-t="match_word">match</span></p>
+              <p class="found-text">The mayor's cat is a ginger cat called Sir Pickles, who sleeps on the town hall steps. Sir Pickles is the town's official "Chief Welcomer", and visitors are asked to say hello to the cat before anyone else.</p>
+            </div>
+            <p class="side-head" data-t="side2_then">Given the paragraphs that matched, the same AI answered:</p>
+            <p class="ai-answer">The mayor’s cat is named Sir Pickles.
+He is a ginger cat who sleeps on the town hall steps and serves as the town’s official “Chief Welcomer,” so visitors are asked to greet him before anyone else.</p>
+          </div>
+          <p class="ex-why missed" data-t="ex3_why">❌ Made up: "Whiskers", plus details about council chambers and market stalls. ✅ With the documents, it read the answer: Sir Pickles.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">Who won the Golden Welly last year?</code></p>
+          <div class="side">
+            <p class="side-head" data-t="side1_head">1. No documents. The AI answered:</p>
+            <p class="ai-answer">Last year, the Golden Welly award was presented to the Wellington City Council for its outstanding community‑engagement and sustainability projects.  The council’s initiatives in local arts, green infrastructure and public transport were highlighted as key reasons for the win.</p>
+          </div>
+          <div class="side">
+            <p class="side-head" data-t="side2_head">2. Look it up first. The best paragraph it found:</p>
+            <div class="found" data-file="puddlewick_festival.txt" data-count="1">
+              <p class="found-story">The Great Puddle Jump Festival · <span class="found-pct">68.5%</span> <span data-t="match_word">match</span></p>
+              <p class="found-text">The festival winner gets the Golden Welly, a single golden rain boot that is kept in the town hall until the next festival. Last year the Golden Welly was won by a nine-year-old girl named Tilly Marsh, whose splash soaked the mayor.</p>
+            </div>
+            <p class="side-head" data-t="side2_then">Given the paragraphs that matched, the same AI answered:</p>
+            <p class="ai-answer">Last year the Golden Welly was won by a nine‑year‑old girl named Tilly Marsh.
+Her splash even soaked the mayor.</p>
+          </div>
+          <p class="ex-why missed" data-t="ex4_why">❌ Made up: a whole award for a real city council, with reasons. The Golden Welly is a rain boot won at a puddle-jumping festival. ✅ With the documents: Tilly Marsh, aged nine.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">How tall is the lighthouse?</code></p>
+          <div class="side">
+            <p class="side-head" data-t="side1_head">1. No documents. The AI answered:</p>
+            <p class="ai-answer">The lighthouse is approximately 35 meters tall (about 115 feet). Its height is chosen to give sufficient visibility for navigation while fitting the surrounding terrain. If you need the exact height of a particular lighthouse, just let me know its name or location.</p>
+          </div>
+          <div class="side">
+            <p class="side-head" data-t="side2_head">2. Look it up first. The best paragraph it found:</p>
+            <div class="found" data-file="puddlewick_lighthouse.txt" data-count="3">
+              <p class="found-story">Puddlewick Lighthouse · <span class="found-pct">37.2%</span> <span data-t="match_word">match</span></p>
+              <p class="found-text">Puddlewick Lighthouse stands on a rock at the edge of the harbour. The lighthouse was built in 1887 and painted with red and white stripes, so ships can spot it even in heavy rain.</p>
+            </div>
+            <p class="side-head" data-t="side2_then">Given the paragraphs that matched, the same AI answered:</p>
+            <p class="ai-answer">I’m not sure. The provided context doesn’t mention the lighthouse’s height.</p>
+          </div>
+          <p class="ex-why missed" data-t="ex5_why">❌ A guess: "about 35 meters" — though it did ask which lighthouse you meant. ✅ The best lesson on this page: the search found the right topic (the lighthouse), but no paragraph gives its height — so the AI said it's not sure, instead of guessing.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_asked">You ask:</span> <code class="ex-in">What are the tax rules for crypto?</code></p>
+          <div class="side">
+            <p class="side-head" data-t="side1_head">1. No documents. The AI answered:</p>
+            <p class="ai-answer">In most jurisdictions, crypto is treated as property rather than currency, so each sale or exchange triggers a capital gain or loss. Exchanges must report transactions, and you must track your cost basis, holding period, and use a method such as FIFO to calculate the gain. Income from mining, staking, or receiving crypto as payment is taxed as ordinary income at the fair‑market value when received.</p>
+          </div>
+          <div class="side">
+            <p class="side-head" data-t="side2_head">2. Look it up first. The best paragraph it found:</p>
+            <div class="found" data-file="" data-count="0">
+              <p class="found-text none" data-t="found_none">🔍 Nothing matched well enough (it needs 10%).</p>
+            </div>
+            <p class="side-head" data-t="side2_then">Given the paragraphs that matched, the same AI answered:</p>
+            <p class="ai-answer">I don't know.</p>
+          </div>
+          <p class="ex-why caught" data-t="ex6_why">✅ Both are fair. Crypto tax is a real topic, so without documents it answered from what it learned before — sensible, but you can't tell which parts are right where you live. The Puddlewick files say nothing about taxes, so with them it said "I don't know". Looking things up keeps an AI honest — but it can only know what's in its documents.</p>
+        </li>
+      </ol>
+      <p class="lesson" data-t="examples_lesson">The lesson: without documents, a real AI filled the gaps with made-up names, dates and whole stories — each one sounding completely sure. With the right paragraphs in front of it, it answered correctly every time, and said "I don't know" when the paragraphs didn't have the answer. You can't always tell a guess from a fact by how confident it sounds.</p>
+      <p id="examples-live" class="muted" role="status" data-ok="✓ The look-up side of all 6 examples was just checked live against the real demo code, in your browser." data-bad="⚠ Some examples no longer match the demo code — the ones marked ⚠ need updating."></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="try_heading">Try your own question</h2>
+      <p data-t="try_help">Ask anything about Puddlewick and see what the look-up side finds — and whether it's strong enough to answer from. (There's no AI here, so this part only shows the looking-up.)</p>
+      <p class="muted" data-t="try_whole_words">Tip: the search only matches whole words — the same words the files use (capital letters don't matter).</p>
+      <p class="warning" data-t="size_warning">This part needs a one-time download of up to 35 MB: Python itself, plus the search tool the demo uses. On mobile data, you may want to wait for Wi-Fi. After that, your browser keeps it and it's quick — and if you've already tried Demo 02, it's already there.</p>
+      <button id="load" class="btn" type="button" disabled data-t="load_button">Load the search</button>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the search ready in your browser… this can take a minute."
+         data-failed="Sorry — the search couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub."></p>
+      <noscript><p class="warning">This part needs JavaScript switched on in your browser. The 6 examples above work without it.</p></noscript>
+      <div id="try-area" hidden>
+        <div class="chips" id="chips">
+          <button type="button" class="chip-btn" data-try="What was the name of the lighthouse keeper in Puddlewick, Cornwall?">What was the name of the lighthouse keeper in Puddlewick, Cornwall?</button>
+          <button type="button" class="chip-btn" data-try="Who is the mayor of Puddlewick in Devon?">Who is the mayor of Puddlewick in Devon?</button>
+          <button type="button" class="chip-btn" data-try="What is the name of the mayor&#x27;s cat in Puddlewick?">What is the name of the mayor's cat in Puddlewick?</button>
+          <button type="button" class="chip-btn" data-try="Who won the Golden Welly last year?">Who won the Golden Welly last year?</button>
+          <button type="button" class="chip-btn" data-try="How tall is the lighthouse?">How tall is the lighthouse?</button>
+          <button type="button" class="chip-btn" data-try="What are the tax rules for crypto?">What are the tax rules for crypto?</button>
+        </div>
+        <label class="try-label" for="try" data-t="try_label">Your question:</label>
+        <textarea id="try" rows="2" spellcheck="false" placeholder="Tap an example above, or type your own question"></textarea>
+        <div id="results" aria-live="polite"
+             data-top="The 3 paragraphs that match best:"
+             data-strong="✓"
+             data-weak="✗ too weak"
+             data-best="Best evidence — an AI would answer from this:"
+             data-check="Word matching isn't perfect, so check it really answers your question!"
+             data-nothing="No paragraph shares a single word with your question."
+             data-dontknow="🔍 Nothing matched well enough (it needs 10%). The honest answer here is: &quot;I don't know.&quot;"></div>
+      </div>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved. This page never talks to an AI — the answers above were saved from a real run.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub. In a terminal, it can ask a real AI both ways, with your own question.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/06-hallucination-demo" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/06-hallucination-demo#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
+    </section>
+
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
+  </main>
+</body>
+</html>

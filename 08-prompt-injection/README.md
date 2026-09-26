@@ -1,5 +1,8 @@
 # 8. Prompt Injection Demo
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/08/
+
 > ⚠️ **This is a simplified teaching example, not a production security
 > tool. Real systems need defense in depth, not a single regex filter.**
 

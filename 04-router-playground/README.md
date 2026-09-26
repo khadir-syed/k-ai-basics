@@ -1,5 +1,8 @@
 # 4. Router Playground
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/04/
+
 ## What is this?
 
 Imagine you walk into a help desk and say "my login is broken." Before
