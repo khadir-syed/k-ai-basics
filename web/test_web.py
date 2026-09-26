@@ -3,6 +3,7 @@ what the real demo code produces. Runs instantly, no network.
 Run from the repo root with: python web/test_web.py
 """
 import contextlib
+import hashlib
 import html
 import io
 import json
@@ -11,6 +12,10 @@ import re
 import shutil
 import subprocess
 import sys
+
+# Demos 01 and 05 use GPT-2 from Hugging Face's cache: never go online for it.
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
@@ -22,6 +27,8 @@ sys.path.insert(0, os.path.join(ROOT, "04-router-playground"))
 sys.path.insert(0, os.path.join(ROOT, "08-prompt-injection"))
 sys.path.insert(0, os.path.join(ROOT, "10-multi-agent-handoff"))
 sys.path.insert(0, os.path.join(ROOT, "06-hallucination-demo"))
+sys.path.insert(0, os.path.join(ROOT, "05-context-window"))
+sys.path.insert(0, os.path.join(ROOT, "01-tokenizer-playground"))
 from redact import redact  # noqa: E402
 import playground  # noqa: E402
 import trace as agent  # noqa: E402  (Demo 03's trace.py, not Python's own)
@@ -30,6 +37,8 @@ import router  # noqa: E402
 import inject  # noqa: E402
 import handoff  # noqa: E402
 import compare  # noqa: E402
+import explore  # noqa: E402
+import run as tokens_demo  # noqa: E402  (Demo 01's run.py)
 
 
 def read(path):
@@ -236,13 +245,111 @@ else:
         assert texts(r'<p class="found-text">(.*?)</p>', ex) == [text], question
         assert texts(r'<p class="found-story">(.*?)</p>', ex) == [f"{titles[src]} · {score * 100:.1f}% match"], question
 
+# ---- GPT-2's word lists (web/gpt2/, used by Demos 01 and 05) ----------------
+# They must be the exact files gpt2.py's fingerprints expect.
+gpt2 = read("gpt2/gpt2.py")
+for name, key in (("merges.txt", "vocab_bpe_hash"), ("vocab.json", "encoder_json_hash")):
+    digest = hashlib.sha256(open(os.path.join(HERE, "gpt2", name), "rb").read()).hexdigest()
+    assert f'{key}="{digest}"' in gpt2, name
+
+# ponytail: Demos 01 and 05 need transformers (01's guesses also need torch and
+# the GPT-2 model, cached by running Demo 01 once). Run with Demo 01's .venv on.
+try:
+    from transformers import GPT2Tokenizer
+    gpt2_tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+except Exception:  # not installed, or GPT-2 never downloaded
+    gpt2_tokenizer = None
+    print("(transformers or GPT-2 not available: skipped the Demo 01 and 05 token checks; "
+          "run with 01-tokenizer-playground's .venv on)")
+
+def letters(ids):
+    """Letters cut across several tokens (a Hindi letter, an emoji), found the
+    terminal's way: keep adding tokens until they decode without "�"."""
+    found, group = [], []
+    for token in ids:
+        group.append(token)
+        text = gpt2_tokenizer.decode(group)
+        if "\ufffd" not in text:
+            if len(group) > 1:
+                found.append(text.replace(" ", "·"))
+            group = []
+    return found
+
+
+def check_bricks(sentence, bricks):
+    """The token bricks shown for sentence: GPT-2's real pieces and IDs, with
+    each cut letter's pieces bracketed under that letter."""
+    real = gpt2_tokenizer.encode(sentence)
+    assert [int(i) for i in re.findall(r'<li data-id="(\d+)">', bricks)] == real, sentence
+    assert texts(r'<code class="tok">(.*?)</code>', bricks) == \
+        [gpt2_tokenizer.decode([t]).replace(" ", "·").replace("\n", "↵") for t in real], sentence
+    assert texts(r'<span class="tok-letter">(.*?)</span>', bricks) == letters(real), sentence
+    return real
+
+
+# ---- Demo 01 ----------------------------------------------------------------
+page = read("01/index.html")
+# Examples hold lists of their own, so cut the page at each example's start.
+examples = page.split('<p class="lesson"')[0].split('<li class="ex">')[1:]
+assert len(examples) == 6, len(examples)
+assert "26 September 2026" in texts(r'<p class="muted" data-t="recorded_note">(.*?)</p>', page)[0]
+if gpt2_tokenizer:
+    try:
+        import torch  # noqa: F401
+    except ImportError:
+        torch = None
+        print("(torch not installed: skipped checking Demo 01's saved guesses)")
+    for ex in examples:
+        sentence = texts(r'<code class="ex-in">(.*?)</code>', ex)[0]
+        # The tokens: the same (piece, id) pairs run.py prints, with spaces shown as ·.
+        real = check_bricks(sentence, ex.split('<ol class="matches')[0])
+        assert texts(r'<span class="tok-count">(\d+)</span>', ex) == [str(len(real))], sentence
+        if torch:
+            # The saved guesses: exactly the top 5 run.py prints.
+            printed_guesses = re.findall(r"^(.*?)\s+#+\s+([\d.]+)%$", printed(tokens_demo.run, sentence), re.M)
+            shown = list(zip(texts(r'<span class="match-story">(.*?)</span>', ex),
+                             texts(r'<span class="match-pct">([\d.]+)%</span>', ex)))
+            assert shown == printed_guesses, (sentence, shown, printed_guesses)
+            assert re.findall(r'value="([\d.]+)"', ex) == [p for _, p in printed_guesses], sentence
+
+    # The Hindi example really is bracketed into its 6 letters, 2 tokens each.
+    assert texts(r'<span class="tok-letter">(.*?)</span>', page) == list("नमस्ते"), "Hindi letters"
+
+# ---- Demo 05 ----------------------------------------------------------------
+page = read("05/index.html")
+budget = int(re.search(r'id="example" data-budget="(\d+)"', page).group(1))
+assert budget == explore.DEFAULT_BUDGET, budget
+steps = re.findall(r'<li class="step" data-tokens="(\d+)" data-used="(\d+)">(.*?)</li>', page, re.S)
+assert len(steps) == 4, len(steps)
+chips = [html.unescape(c) for c in re.findall(r'data-try="(.*?)"', page)]
+assert chips[:4] == [texts(r'<p class="step-msg">.*?<q class="msg">(.*?)</q>', st)[0] for _, _, st in steps], chips
+if gpt2_tokenizer:
+    # "How are tokens counted?": the example message's real tokens.
+    counting = re.search(r'<div class="count-example" data-text="(.*?)">(.*?)</div>', page, re.S)
+    message = html.unescape(counting.group(1))
+    check_bricks(message, counting.group(2))
+    assert f'"{message}" is {len(gpt2_tokenizer.encode(message))} tokens' in html.unescape(page), message
+    window = []
+    for tokens, used, step in steps:
+        message = texts(r'<p class="step-msg">.*?<q class="msg">(.*?)</q>', step)[0]
+        n = len(gpt2_tokenizer.encode(message))  # what explore.py counts for each line
+        dropped = explore.add_message(window, message, n, budget)
+        assert (int(tokens), int(used)) == (n, sum(t for _, t in window)), message
+        assert texts(r'<p class="step-dropped">.*?<q class="msg">(.*?)</q>', step) == [t for t, _ in dropped], message
+    assert texts(r'<ul class="still" id="example-still">(.*?)</ul>', page) and \
+        re.findall(r'<q class="msg">(.*?)</q>', re.search(r'id="example-still">(.*?)</ul>', page, re.S).group(1)) == \
+        [html.escape(t, quote=False) for t, _ in window]
+    # The shopping-list button really is too big for the default notepad.
+    assert len(gpt2_tokenizer.encode(chips[-1])) > budget, chips[-1]
+
 # ---- All pages --------------------------------------------------------------
 DEMOS = sorted(d for d in os.listdir(HERE) if re.fullmatch(r"\d\d", d))
-assert DEMOS == ["02", "03", "04", "06", "07", "08", "09", "10"], DEMOS
+assert DEMOS == ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"], DEMOS
 # Every demo page uses the same pinned Pyodide, in its HTML and its app.js.
 versions = set()
 for demo in DEMOS:
     versions |= set(re.findall(r"pyodide(?:@|/v)([\d.]+)/", read(f"{demo}/index.html") + read(f"{demo}/app.js")))
+versions |= set(re.findall(r"pyodide(?:@|/v)([\d.]+)/", read("gpt2/tokens.js")))
 assert len(versions) == 1, versions
 
 # The home page links to every demo page.

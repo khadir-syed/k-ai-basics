@@ -4,16 +4,17 @@
 
 Right now:
 
+- **Demo 01 — How AI reads words:** https://khadir-syed.github.io/k_ai-basics/web/01/
 - **Demo 02 — How AI looks things up:** https://khadir-syed.github.io/k_ai-basics/web/02/
 - **Demo 03 — Watch an AI agent think:** https://khadir-syed.github.io/k_ai-basics/web/03/
 - **Demo 04 — Who should handle this?:** https://khadir-syed.github.io/k_ai-basics/web/04/
+- **Demo 05 — Why AI forgets:** https://khadir-syed.github.io/k_ai-basics/web/05/
 - **Demo 06 — When AI makes things up:** https://khadir-syed.github.io/k_ai-basics/web/06/
 - **Demo 07 — Ask AI better:** https://khadir-syed.github.io/k_ai-basics/web/07/
 - **Demo 08 — Hidden orders in documents:** https://khadir-syed.github.io/k_ai-basics/web/08/
 - **Demo 09 — Hide private info from AI:** https://khadir-syed.github.io/k_ai-basics/web/09/
 - **Demo 10 — Two agents, one job:** https://khadir-syed.github.io/k_ai-basics/web/10/
 
-More demos will follow.
 
 ## What is this?
 
@@ -46,6 +47,16 @@ That means:
   Demo 08 [`08-prompt-injection/inject.py`](../08-prompt-injection/inject.py)
   and its documents, and Demo 10
   [`10-multi-agent-handoff/handoff.py`](../10-multi-agent-handoff/handoff.py).
+  Demo 05 loads [`05-context-window/explore.py`](../05-context-window/explore.py)
+  and uses its real forgetting rule.
+- **Demos 01 and 05 need GPT-2's tokenizer.** The terminal versions use the
+  `transformers` library, which is too big for a browser; the pages rebuild
+  the very same tokenizer with `tiktoken` from GPT-2's own word lists, kept
+  in [`gpt2/`](gpt2/) (about 1.5 MB). Tested on tricky text (emoji, Hindi,
+  Chinese, accents, spaces): identical tokens. Demo 01's next-token guesses
+  need the whole GPT-2 model (about 500 MB), so its page shows guesses saved
+  from a terminal run — GPT-2 always gives the same guesses for the same
+  sentence, so `test_web.py` can re-make them and compare.
 - **Demos 02 and 06 ask before their big download.** Their search uses scikit-learn,
   which adds about 22 MB, so nothing downloads until the visitor taps
   "Load the search" (up to 35 MB in all). The browser gets scikit-learn
@@ -77,16 +88,19 @@ flowchart LR
 | File | What it does |
 |---|---|
 | [`index.html`](index.html) | The home page: the brand header and a card for each demo. No scripts at all. The photo (and every page's tab icon) loads straight from the GitHub profile, so a new profile photo shows up by itself — no image files are kept here. |
-| `02/`, `03/`, `04/`, `06/`, `07/`, `08/`, `09/`, `10/` — each one's `index.html` | One page per demo. **All the English text lives here**, so it reads instantly — even before (or without) any scripts. |
+| `01/` to `10/` — each one's `index.html` | One page per demo. **All the English text lives here**, so it reads instantly — even before (or without) any scripts. |
+| [`01/app.js`](01/app.js) | Loads Pyodide and tiktoken, builds GPT-2's tokenizer from [`gpt2/`](gpt2/), re-checks the 6 examples' tokens live, and splits your own sentence into tokens. |
 | [`02/app.js`](02/app.js) | When the visitor taps "Load the search": loads Pyodide and scikit-learn, gives it the real `ask.py` and the 4 stories, re-checks the 6 examples live, then shows the top 5 matching paragraphs for any question. |
 | [`03/app.js`](03/app.js) | Loads Pyodide with the real `trace.py`, re-checks the 6 examples live, and shows every step the agent takes on your own question. |
 | [`04/app.js`](04/app.js) | Loads Pyodide with the real `router.py`, re-checks the 6 examples live, and scores the 3 skills for your own request. |
+| [`05/app.js`](05/app.js) | Loads Pyodide, tiktoken and the real `explore.py`, replays the example chat live through its `add_message()`, and runs your own chat on a notepad of the size you pick. |
 | [`06/app.js`](06/app.js) | When the visitor taps "Load the search": loads Pyodide and scikit-learn, gives it the real `compare.py` and the 3 Puddlewick files, re-checks the look-up side of the 6 examples live, then shows the top 3 paragraphs (✓ or ✗ at the 10% line) and the best evidence — or "I don't know" — for any question. |
 | [`07/app.js`](07/app.js) | Shows the saved AI answers (first 3 lines, then "Show all"), loads Pyodide with the real `playground.py`, and runs its checklist on your own question. Also re-checks the 4 examples live. |
 | [`07/markdown.js`](07/markdown.js) | AI tools write answers with formatting symbols (`##` heading, `**bold**`, `\| tables \|`). This turns them into real headings, lists and tables — safely: text always goes into the page as plain text, never as code. |
 | [`08/app.js`](08/app.js) | Loads Pyodide with the real `inject.py` and its 3 documents, re-checks the 4 steps live, and runs any document you write through the filter (on or off) and the mock agent. |
 | [`09/app.js`](09/app.js) | Loads Pyodide, gives it the real `redact.py` and its `docs/`, runs it, and shows the results. Also re-checks the 6 examples live. |
 | [`10/app.js`](10/app.js) | Loads Pyodide with the real `handoff.py`, re-checks the 6 examples live, runs the real JSON check on the saved real-AI reply, and runs both agents on your own bug report, handed over as JSON or plain text. |
+| [`gpt2/`](gpt2/) | GPT-2's two word lists; `gpt2.py`, which turns them into a tokenizer for Demos 01 and 05 (and keeps a letter's pieces together, like the 2 tokens of a Hindi letter); and `tokens.js`, which both pages use to load it and draw tokens — see its [README](gpt2/README.md). |
 | [`style.css`](style.css) | Colours and layout for every page, matching https://khadir-syed.github.io |
 | [`test_web.py`](test_web.py) | Self-check: every example shown on a page must be exactly what the real code produces. |
 
@@ -120,12 +134,16 @@ opened as files from loading other files.)
 python web/test_web.py
 ```
 
-The Demo 02 checks need scikit-learn. If Demo 02's box is set up (see its
-[README](../02-mini-rag/README.md#how-to-run-it-step-by-step)), run it with
-that box's Python so nothing is skipped:
+Some checks need a demo's tools: scikit-learn (Demos 02 and 06), and
+`transformers`, PyTorch and GPT-2 (Demos 01 and 05). Without them, those
+checks are skipped with a note. Demo 01's box has all of them, so once it's
+set up and has run once (see its
+[README](../01-tokenizer-playground/README.md#how-to-run-it-step-by-step)),
+run the self-check with that box's Python so nothing is skipped. It never
+goes online — GPT-2 comes from the copy Demo 01 already downloaded:
 
 ```bash
-02-mini-rag/.venv/bin/python web/test_web.py
+01-tokenizer-playground/.venv/bin/python web/test_web.py
 ```
 
 It checks that:
@@ -156,6 +174,14 @@ It checks that:
   reports. For the saved real-AI run, the Drafter's reply really passes
   `check_json`, and the page's notes about it (4 invented steps sent as a
   list, "data loss" in Triage's answer, the date and model) really hold.
+- **Demo 01:** each example's tokens (pieces and ID numbers) match GPT-2's
+  tokenizer, and its 5 saved guesses match what `run.py` prints for that
+  sentence.
+- **Demo 05:** the example chat — each message's tokens, how full the
+  notepad is, and what gets rubbed out — matches `explore.py`'s
+  `add_message()`, and the shopping-list button really is too big for the
+  notepad.
+- **GPT-2's word lists** in `gpt2/` match the fingerprints in `gpt2.py`.
 - **Demo 02:** the story list matches the files in `docs/`, the 6 examples
   show the paragraph `ask.py` really picks (or "nothing found"), and the
   tap-to-try buttons offer the same 6. Without scikit-learn, this part is
@@ -190,13 +216,13 @@ file doesn't match the fingerprint, **the browser refuses to run it** — so
 if you change the version without changing the fingerprint, the page
 silently stops working.
 
-The version appears in **two** places on **each** demo page (`02/`, `03/`,
-`04/`, `06/`, `07/`, `08/`, `09/` and `10/`), plus a third in `02/app.js` and `06/app.js` — change them all, to the
+The version appears in **two** places on **each** demo page (`01/` to `10/`), plus a third in `01/app.js`, `02/app.js`, `05/app.js`
+and `06/app.js` — change them all, to the
 same number:
 
 - `index.html`: the `<script src="https://cdn.jsdelivr.net/npm/pyodide@…/pyodide.js">` line
 - `app.js`: the `PYODIDE_URL` line
-- `02/app.js` and `06/app.js` only: the `PACKAGES_URL` line, where they get scikit-learn
+- `01/`, `02/`, `05/` and `06/app.js` only: the `PACKAGES_URL` line, where they get scikit-learn or tiktoken
 
 (`python web/test_web.py` fails if they don't all match.)
 
@@ -216,7 +242,8 @@ fingerprint or version is wrong.
 - **Strict content rules.** Each page has a `Content-Security-Policy` that
   only lets it load its own files, the pinned Pyodide from jsDelivr, and the
   GitHub profile photo (the home page: its own files and the photo only). No
-  other website can be contacted. Demos 02 and 06 get scikit-learn from
+  other website can be contacted. Demos 02 and 06 get scikit-learn, and
+  Demos 01 and 05 get tiktoken, from
   jsDelivr, and Pyodide checks each of its files against a fingerprint
   before using it.
 - **No scripts inside the HTML.** Scripts live in each demo's `app.js` only.
@@ -239,6 +266,3 @@ Follow the same pattern as the other pages, like `09/`:
    drift from the code.
 4. Add a browser link to the top of the demo's own README, and update the
    list at the top of this file and in the root README.
-
-Demos 01 and 05 need large AI models that are too big for a browser, so
-they will need a lighter approach.

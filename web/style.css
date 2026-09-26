@@ -256,3 +256,59 @@ textarea {
 }
 .ex .ai-answer { margin: 6px 0 8px; }
 .side-head { font-size: 14px; font-weight: 700; }
+
+/* Demo 01: tokens as little bricks, and GPT-2's guesses as bars */
+.tokens { list-style: none; margin: 6px 0 10px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tokens li { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+.tok {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; white-space: pre;
+  background: var(--card); border: 1px solid var(--orange); border-radius: 6px; padding: 3px 7px; color: var(--text);
+}
+.tok-id { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tok-total { font-weight: 700; color: var(--amber-soft); margin: 8px 0 0; }
+.meter {
+  grid-column: 1 / -1; width: 100%; height: 6px; border: 0; border-radius: 9999px; overflow: hidden;
+  -webkit-appearance: none; appearance: none; background: var(--line);
+}
+.meter::-webkit-progress-bar { background: var(--line); border-radius: 9999px; }
+.meter::-webkit-progress-value { background: var(--orange); border-radius: 9999px; }
+.meter::-moz-progress-bar { background: var(--orange); border-radius: 9999px; }
+.guesses { margin-bottom: 8px; }
+.inline-link { color: var(--amber); }
+.inline-link:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* Demo 05: the notepad */
+.steps { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 0 0 10px; }
+.steps .step { margin: 0; }
+.step p { margin: 0 0 6px; }
+.step p:last-child { margin-bottom: 0; }
+.step-msg { font-size: 15px; }
+.step-who { font-weight: 700; color: var(--amber); }
+.msg { color: var(--text); }
+.step-n { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.step-dropped { font-size: 14px; color: #fca5a5; }
+.step-used { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--amber-soft); font-weight: 700; }
+.step-used .meter { flex: 1; min-width: 80px; }
+.still { margin: 0 0 12px; padding-left: 22px; font-size: 14px; color: var(--soft); }
+.still li { margin: 2px 0; }
+.still.gone { color: var(--muted); }
+.still.gone .msg { color: var(--muted); text-decoration: line-through; }
+.option-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.option-row .try-label { margin: 0; }
+select, input[type="text"] {
+  background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; font: inherit; font-size: 15px;
+}
+select:focus-visible, input[type="text"]:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.send-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.send-row input { flex: 1; min-width: 0; }
+/* A letter cut into several tokens: its pieces in a bracket, the letter below. */
+.tok-group {
+  flex-direction: column; border: 1px dashed var(--amber); border-top: 0;
+  border-radius: 0 0 10px 10px; padding: 0 6px 4px;
+}
+.tok-group .tokens { margin: 0; }
+.tok-letter { font-size: 18px; line-height: 1.2; color: var(--amber-soft); font-weight: 700; }
+.tok-note { margin: 0 0 10px; font-size: 13px; }
+.tok-ids { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--amber-soft); word-break: break-word; }

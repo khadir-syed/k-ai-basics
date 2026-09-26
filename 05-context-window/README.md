@@ -1,5 +1,8 @@
 # 5. Context Window Explorer
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/05/
+
 ## What is this?
 
 Imagine you're telling a friend a long story, but your friend has a tiny

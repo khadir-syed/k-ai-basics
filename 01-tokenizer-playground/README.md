@@ -1,5 +1,8 @@
 # 1. Tokenizer Playground
 
+> 🌐 **No terminal? Try this demo in your browser — nothing to install:**
+> https://khadir-syed.github.io/k_ai-basics/web/01/
+
 ## What is this?
 
 Imagine you have a big box of Lego bricks. You can't build anything with

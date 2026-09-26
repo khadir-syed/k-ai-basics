@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files, the pinned Pyodide from jsDelivr and the
+       GitHub profile photo (the tab icon) may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' https://avatars.githubusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="See how AI cuts your words into tokens, and what GPT-2 guesses comes next. Runs in your browser, nothing to install.">
+  <title>How AI reads words — k_ai-basics</title>
+  <link rel="icon" type="image/jpeg" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=64">
+  <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=180">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="../gpt2/tokens.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
+  <main class="wrap">
+    <a class="back" href="../">← All demos</a>
+    <header class="hero">
+      <span class="badge" data-t="badge">k_ai-basics · Demo 01 · Tokens</span>
+      <h1 data-t="title">How AI reads words</h1>
+      <p class="subtitle" data-t="subtitle">Tiny pieces first, then a guess</p>
+    </header>
+
+    <section class="card">
+      <p data-t="intro_1">Imagine a big box of Lego bricks. You can't build anything with one giant brick — you need lots of small ones that snap together.</p>
+      <p data-t="intro_2">AI is the same with words. It can't read a sentence the way we do. First it cuts the sentence into small pieces called tokens — a whole word, part of a word, or even a single letter. Each token has an ID number, and the AI only ever sees those numbers.</p>
+      <p data-t="intro_3">Then it does the one thing it's really built for: it guesses which token comes next. Everything an AI writes, it writes one guessed token at a time.</p>
+      <p id="ids" data-t="intro_ids">What's the number under each token? It's the token's ID. GPT-2 has a numbered list of 50,257 tokens, and "Once" is number 7454 on it. The number isn't worked out from the letters — it's simply where "Once" sits in the list. GPT-2 made its list by reading lots of text. It started with 256 basic building blocks (numbers 0 to 255: single letters, digits, symbols, and bits of other letters — a comma is number 11). Then, again and again, it glued together the two pieces it saw side by side most often, and gave each new piece the next number. "·the" was glued very early, so it's number 262. "Once" was made from "O" + "nce", and got 7454. So a small number usually means a very common piece. The AI never sees the letters O-n-c-e — only the number 7454.</p>
+      <p data-t="intro_4">This page uses GPT-2, a small AI that OpenAI released in 2019 — old and simple, which makes it perfect for seeing the pieces.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="examples_heading">6 examples: the pieces, and the guesses</h2>
+      <p class="muted" data-t="legend">· marks a space — it belongs to the token after it. Some letters, like Hindi letters or emoji, are cut into several tokens. A piece of a letter can't be drawn on its own, so it shows as �; the bracket underneath shows the letter those pieces make together.</p>
+      <ol class="examples" id="examples">
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_typed">You type:</span> <code class="ex-in">Once upon a time</code></p>
+          <p class="side-head"><span data-t="split_into">Split into</span> <span class="tok-count">4</span> <span data-t="tokens_word">tokens:</span></p>
+          <ol class="tokens"><li data-id="7454"><code class="tok">Once</code><span class="tok-id">7454</span></li><li data-id="2402"><code class="tok">·upon</code><span class="tok-id">2402</span></li><li data-id="257"><code class="tok">·a</code><span class="tok-id">257</span></li><li data-id="640"><code class="tok">·time</code><span class="tok-id">640</span></li></ol>
+          <p class="muted tok-note"><span data-t="ids_pointer">The number under each token is its ID.</span> <a class="inline-link" href="#ids" data-t="ids_link">What do the numbers mean?</a></p>
+          <p class="side-head" data-t="guesses_head">GPT-2's top 5 guesses for the next token:</p>
+          <ol class="matches guesses">
+              <li class="match"><span class="match-story">,</span><span class="match-pct">42.7%</span><progress class="meter" max="100" value="42.7">42.7%</progress></li>
+              <li class="match"><span class="match-story">the</span><span class="match-pct">6.5%</span><progress class="meter" max="100" value="6.5">6.5%</progress></li>
+              <li class="match"><span class="match-story">I</span><span class="match-pct">4.1%</span><progress class="meter" max="100" value="4.1">4.1%</progress></li>
+              <li class="match"><span class="match-story">he</span><span class="match-pct">3.7%</span><progress class="meter" max="100" value="3.7">3.7%</progress></li>
+              <li class="match"><span class="match-story">there</span><span class="match-pct">2.9%</span><progress class="meter" max="100" value="2.9">2.9%</progress></li>
+          </ol>
+          <p class="ex-why caught" data-t="ex1_why">✅ A confident guess: "," at 42.7%. GPT-2 has read countless stories that go "Once upon a time, there was…".</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_typed">You type:</span> <code class="ex-in">The cat sat on the</code></p>
+          <p class="side-head"><span data-t="split_into">Split into</span> <span class="tok-count">5</span> <span data-t="tokens_word">tokens:</span></p>
+          <ol class="tokens"><li data-id="464"><code class="tok">The</code><span class="tok-id">464</span></li><li data-id="3797"><code class="tok">·cat</code><span class="tok-id">3797</span></li><li data-id="3332"><code class="tok">·sat</code><span class="tok-id">3332</span></li><li data-id="319"><code class="tok">·on</code><span class="tok-id">319</span></li><li data-id="262"><code class="tok">·the</code><span class="tok-id">262</span></li></ol>
+          <p class="muted tok-note"><span data-t="ids_pointer">The number under each token is its ID.</span> <a class="inline-link" href="#ids" data-t="ids_link">What do the numbers mean?</a></p>
+          <p class="side-head" data-t="guesses_head">GPT-2's top 5 guesses for the next token:</p>
+          <ol class="matches guesses">
+              <li class="match"><span class="match-story">floor</span><span class="match-pct">7.6%</span><progress class="meter" max="100" value="7.6">7.6%</progress></li>
+              <li class="match"><span class="match-story">bed</span><span class="match-pct">6.5%</span><progress class="meter" max="100" value="6.5">6.5%</progress></li>
+              <li class="match"><span class="match-story">couch</span><span class="match-pct">5.4%</span><progress class="meter" max="100" value="5.4">5.4%</progress></li>
+              <li class="match"><span class="match-story">ground</span><span class="match-pct">5.2%</span><progress class="meter" max="100" value="5.2">5.2%</progress></li>
+              <li class="match"><span class="match-story">edge</span><span class="match-pct">4.8%</span><progress class="meter" max="100" value="4.8">4.8%</progress></li>
+          </ol>
+          <p class="ex-why" data-t="ex2_why">Sensible guesses — floor, bed, couch — but none of them is sure, because many words could come next.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_typed">You type:</span> <code class="ex-in">The capital of France is</code></p>
+          <p class="side-head"><span data-t="split_into">Split into</span> <span class="tok-count">5</span> <span data-t="tokens_word">tokens:</span></p>
+          <ol class="tokens"><li data-id="464"><code class="tok">The</code><span class="tok-id">464</span></li><li data-id="3139"><code class="tok">·capital</code><span class="tok-id">3139</span></li><li data-id="286"><code class="tok">·of</code><span class="tok-id">286</span></li><li data-id="4881"><code class="tok">·France</code><span class="tok-id">4881</span></li><li data-id="318"><code class="tok">·is</code><span class="tok-id">318</span></li></ol>
+          <p class="muted tok-note"><span data-t="ids_pointer">The number under each token is its ID.</span> <a class="inline-link" href="#ids" data-t="ids_link">What do the numbers mean?</a></p>
+          <p class="side-head" data-t="guesses_head">GPT-2's top 5 guesses for the next token:</p>
+          <ol class="matches guesses">
+              <li class="match"><span class="match-story">the</span><span class="match-pct">8.5%</span><progress class="meter" max="100" value="8.5">8.5%</progress></li>
+              <li class="match"><span class="match-story">now</span><span class="match-pct">4.8%</span><progress class="meter" max="100" value="4.8">4.8%</progress></li>
+              <li class="match"><span class="match-story">a</span><span class="match-pct">4.6%</span><progress class="meter" max="100" value="4.6">4.6%</progress></li>
+              <li class="match"><span class="match-story">France</span><span class="match-pct">3.2%</span><progress class="meter" max="100" value="3.2">3.2%</progress></li>
+              <li class="match"><span class="match-story">Paris</span><span class="match-pct">3.2%</span><progress class="meter" max="100" value="3.2">3.2%</progress></li>
+          </ol>
+          <p class="ex-why missed" data-t="ex3_why">❌ Not a fact-finder. "Paris" comes 5th, at just 3.2% — "the" comes first. GPT-2 guesses which words usually come next in text; it doesn't look facts up. Newer, much bigger AIs are far better at this — but they work the same way.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_typed">You type:</span> <code class="ex-in">unbelievable</code></p>
+          <p class="side-head"><span data-t="split_into">Split into</span> <span class="tok-count">4</span> <span data-t="tokens_word">tokens:</span></p>
+          <ol class="tokens"><li data-id="403"><code class="tok">un</code><span class="tok-id">403</span></li><li data-id="6667"><code class="tok">bel</code><span class="tok-id">6667</span></li><li data-id="11203"><code class="tok">iev</code><span class="tok-id">11203</span></li><li data-id="540"><code class="tok">able</code><span class="tok-id">540</span></li></ol>
+          <p class="muted tok-note"><span data-t="ids_pointer">The number under each token is its ID.</span> <a class="inline-link" href="#ids" data-t="ids_link">What do the numbers mean?</a></p>
+          <p class="side-head" data-t="guesses_head">GPT-2's top 5 guesses for the next token:</p>
+          <ol class="matches guesses">
+              <li class="match"><span class="match-story">"</span><span class="match-pct">16.7%</span><progress class="meter" max="100" value="16.7">16.7%</progress></li>
+              <li class="match"><span class="match-story">.</span><span class="match-pct">15.5%</span><progress class="meter" max="100" value="15.5">15.5%</progress></li>
+              <li class="match"><span class="match-story">,</span><span class="match-pct">9.1%</span><progress class="meter" max="100" value="9.1">9.1%</progress></li>
+              <li class="match"><span class="match-story">."</span><span class="match-pct">5.4%</span><progress class="meter" max="100" value="5.4">5.4%</progress></li>
+              <li class="match"><span class="match-story">,"</span><span class="match-pct">3.7%</span><progress class="meter" max="100" value="3.7">3.7%</progress></li>
+          </ol>
+          <p class="ex-why" data-t="ex4_why">One word, 4 tokens: "un", "bel", "iev", "able". Common words are often a single token; longer or rarer words get cut into pieces.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_typed">You type:</span> <code class="ex-in">Hello hello HELLO</code></p>
+          <p class="side-head"><span data-t="split_into">Split into</span> <span class="tok-count">4</span> <span data-t="tokens_word">tokens:</span></p>
+          <ol class="tokens"><li data-id="15496"><code class="tok">Hello</code><span class="tok-id">15496</span></li><li data-id="23748"><code class="tok">·hello</code><span class="tok-id">23748</span></li><li data-id="47899"><code class="tok">·HELL</code><span class="tok-id">47899</span></li><li data-id="46"><code class="tok">O</code><span class="tok-id">46</span></li></ol>
+          <p class="muted tok-note"><span data-t="ids_pointer">The number under each token is its ID.</span> <a class="inline-link" href="#ids" data-t="ids_link">What do the numbers mean?</a></p>
+          <p class="side-head" data-t="guesses_head">GPT-2's top 5 guesses for the next token:</p>
+          <ol class="matches guesses">
+              <li class="match"><span class="match-story">!</span><span class="match-pct">12.3%</span><progress class="meter" max="100" value="12.3">12.3%</progress></li>
+              <li class="match"><span class="match-story">,</span><span class="match-pct">4.0%</span><progress class="meter" max="100" value="4.0">4.0%</progress></li>
+              <li class="match"><span class="match-story">!!!</span><span class="match-pct">3.6%</span><progress class="meter" max="100" value="3.6">3.6%</progress></li>
+              <li class="match"><span class="match-story">!!</span><span class="match-pct">3.3%</span><progress class="meter" max="100" value="3.3">3.3%</progress></li>
+              <li class="match"><span class="match-story">HELL</span><span class="match-pct">2.9%</span><progress class="meter" max="100" value="2.9">2.9%</progress></li>
+          </ol>
+          <p class="ex-why" data-t="ex5_why">The same word, split 3 different ways: "Hello", "·hello" (with its space), and "·HELL" + "O". Capital letters and spaces change the tokens.</p>
+        </li>
+        <li class="ex">
+          <p class="ex-what"><span data-t="ex_typed">You type:</span> <code class="ex-in">नमस्ते</code></p>
+          <p class="side-head"><span data-t="split_into">Split into</span> <span class="tok-count">12</span> <span data-t="tokens_word">tokens:</span></p>
+          <ol class="tokens"><li class="tok-group"><ol class="tokens"><li data-id="11976"><code class="tok">�</code><span class="tok-id">11976</span></li><li data-id="101"><code class="tok">�</code><span class="tok-id">101</span></li></ol><span class="tok-letter">न</span></li><li class="tok-group"><ol class="tokens"><li data-id="11976"><code class="tok">�</code><span class="tok-id">11976</span></li><li data-id="106"><code class="tok">�</code><span class="tok-id">106</span></li></ol><span class="tok-letter">म</span></li><li class="tok-group"><ol class="tokens"><li data-id="11976"><code class="tok">�</code><span class="tok-id">11976</span></li><li data-id="116"><code class="tok">�</code><span class="tok-id">116</span></li></ol><span class="tok-letter">स</span></li><li class="tok-group"><ol class="tokens"><li data-id="24231"><code class="tok">�</code><span class="tok-id">24231</span></li><li data-id="235"><code class="tok">�</code><span class="tok-id">235</span></li></ol><span class="tok-letter">्</span></li><li class="tok-group"><ol class="tokens"><li data-id="11976"><code class="tok">�</code><span class="tok-id">11976</span></li><li data-id="97"><code class="tok">�</code><span class="tok-id">97</span></li></ol><span class="tok-letter">त</span></li><li class="tok-group"><ol class="tokens"><li data-id="24231"><code class="tok">�</code><span class="tok-id">24231</span></li><li data-id="229"><code class="tok">�</code><span class="tok-id">229</span></li></ol><span class="tok-letter">े</span></li></ol>
+          <p class="muted tok-note"><span data-t="ids_pointer">The number under each token is its ID.</span> <a class="inline-link" href="#ids" data-t="ids_link">What do the numbers mean?</a></p>
+          <p class="side-head" data-t="guesses_head">GPT-2's top 5 guesses for the next token:</p>
+          <ol class="matches guesses">
+              <li class="match"><span class="match-story">�</span><span class="match-pct">47.4%</span><progress class="meter" max="100" value="47.4">47.4%</progress></li>
+              <li class="match"><span class="match-story">�</span><span class="match-pct">28.0%</span><progress class="meter" max="100" value="28.0">28.0%</progress></li>
+              <li class="match"><span class="match-story">,</span><span class="match-pct">3.9%</span><progress class="meter" max="100" value="3.9">3.9%</progress></li>
+              <li class="match"><span class="match-story">&lt;space&gt;</span><span class="match-pct">2.7%</span><progress class="meter" max="100" value="2.7">2.7%</progress></li>
+              <li class="match"><span class="match-story">&lt;space&gt;</span><span class="match-pct">1.6%</span><progress class="meter" max="100" value="1.6">1.6%</progress></li>
+          </ol>
+          <p class="ex-why" data-t="ex6_why">One Hindi word — it means "hello" — takes 12 tokens, while "Hello" in English takes 1. GPT-2 learned mostly from English, so other languages get cut into many more, smaller pieces. Each letter here is 2 tokens. Even its guesses are pieces of letters, shown as �.</p>
+        </li>
+      </ol>
+      <p class="lesson" data-t="examples_lesson">The lesson: AI doesn't see words, it sees numbered pieces — and it doesn't know facts, it guesses the most likely next piece. Today's AIs are thousands of times bigger than GPT-2, so their guesses are far better. But under the hood, they still read tokens and guess the next one.</p>
+      <p class="muted" data-t="recorded_note">📅 GPT-2's guesses were made on 26 September 2026, by running the terminal version of this demo. They aren't random: the same sentence always gets the same 5 guesses. Making new guesses needs the whole GPT-2 model (about 500 MB), so this page doesn't — but it does split text live, below.</p>
+      <p id="examples-live" class="muted" role="status" data-ok="✓ The tokens of all 6 examples were just checked live, in your browser, against the ones the terminal version made." data-bad="⚠ Some examples no longer match — the ones marked ⚠ need updating."></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="try_heading">Split your own sentence</h2>
+      <p data-t="try_help">Type anything and watch it being cut into tokens, exactly the way GPT-2 does it. Try a long word, your name, a number, an emoji, or another language.</p>
+      <div class="chips" id="chips">
+        <button type="button" class="chip-btn" disabled data-try="Once upon a time">Once upon a time</button>
+        <button type="button" class="chip-btn" disabled data-try="unbelievable">unbelievable</button>
+        <button type="button" class="chip-btn" disabled data-try="Hello hello HELLO">Hello hello HELLO</button>
+        <button type="button" class="chip-btn" disabled data-try="नमस्ते">नमस्ते</button>
+        <button type="button" class="chip-btn" disabled data-try="¿Cómo estás?">¿Cómo estás?</button>
+        <button type="button" class="chip-btn" disabled data-try="12345 + 67890 = 80235">12345 + 67890 = 80235</button>
+        <button type="button" class="chip-btn" disabled data-try="I love pizza 🍕">I love pizza 🍕</button>
+      </div>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the tokenizer ready in your browser… (a one-time download of about 15 MB — after that it's quick)"
+         data-failed="Sorry — the tokenizer couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub.">Getting the tokenizer ready in your browser…</p>
+      <noscript><p class="warning">This part needs JavaScript switched on in your browser. The 6 examples above work without it.</p></noscript>
+      <label class="try-label" for="try" data-t="try_label">Your sentence:</label>
+      <textarea id="try" rows="2" disabled spellcheck="false" placeholder="Tap an example above, or type your own"></textarea>
+      <div id="try-output" aria-live="polite" data-count="{n} tokens" data-one="1 token"
+           data-sees="What the AI actually sees — just the ID numbers:"></div>
+      <p class="muted" data-t="try_next">How many tokens can an AI keep in mind at once? That's Demo 05 — <a class="inline-link" href="../05/">watch an AI forget</a>.</p>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved. This page never talks to an AI — it only uses GPT-2's list of tokens, not GPT-2 itself.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub. In a terminal, it runs the whole GPT-2 model, so it can guess the next token for any sentence you type.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/01-tokenizer-playground" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/01-tokenizer-playground#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
+    </section>
+
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
+  </main>
+</body>
+</html>

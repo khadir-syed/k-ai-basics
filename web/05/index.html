@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this site's own files, the pinned Pyodide from jsDelivr and the
+       GitHub profile photo (the tab icon) may load.
+       Nothing on this page sends data anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; connect-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' https://avatars.githubusercontent.com; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Watch an AI forget the start of a chat once its memory is full — and see exactly which message goes. Runs in your browser, nothing to install.">
+  <title>Why AI forgets — k_ai-basics</title>
+  <link rel="icon" type="image/jpeg" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=64">
+  <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/15974849?v=4&amp;s=180">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@314.0.7/pyodide.js"
+          integrity="sha384-hYKrcQ7FiKU7f1c92md9N2eh7BoBVX4CPkNDfQyyVclsjZevvDOBUkajGcYk1EF8"
+          crossorigin="anonymous"></script>
+  <script src="../gpt2/tokens.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- All English text lives right here, so the page reads instantly and
+       without scripts. data-t names each piece for future translations. -->
+  <main class="wrap">
+    <a class="back" href="../">← All demos</a>
+    <header class="hero">
+      <span class="badge" data-t="badge">k_ai-basics · Demo 05 · Context window</span>
+      <h1 data-t="title">Why AI forgets</h1>
+      <p class="subtitle" data-t="subtitle">A notepad that only fits so much</p>
+    </header>
+
+    <section class="card">
+      <p data-t="intro_1">Imagine telling a friend a long story, but your friend has a tiny notepad that only fits a few lines. Every time the notepad is full and you say something new, your friend rubs out the oldest line to make room. Later, if you ask "what did I say at the start?" — it's gone. Your friend didn't choose to forget. The notepad was just full.</p>
+      <p data-t="intro_2">AI chatbots work the same way. They can only "see" a certain number of tokens at once — the little pieces words are cut into (see <a class="inline-link" href="../01/">Demo 01</a>). That limit is called the context window. When a chat gets too long, the oldest messages fall off the notepad.</p>
+      <div id="counting">
+        <p data-t="counting_1">How are tokens counted? Each message is cut into tokens exactly the way GPT-2 does it in Demo 01, and the pieces are counted. For example, "Hi! My name is Priya." is 8 tokens:</p>
+        <div class="count-example" data-text="Hi! My name is Priya."><ol class="tokens"><li data-id="17250"><code class="tok">Hi</code><span class="tok-id">17250</span></li><li data-id="0"><code class="tok">!</code><span class="tok-id">0</span></li><li data-id="2011"><code class="tok">·My</code><span class="tok-id">2011</span></li><li data-id="1438"><code class="tok">·name</code><span class="tok-id">1438</span></li><li data-id="318"><code class="tok">·is</code><span class="tok-id">318</span></li><li data-id="4389"><code class="tok">·Pri</code><span class="tok-id">4389</span></li><li data-id="3972"><code class="tok">ya</code><span class="tok-id">3972</span></li><li data-id="13"><code class="tok">.</code><span class="tok-id">13</span></li></ol></div>
+        <p data-t="counting_2">Roughly: a common word is 1 token, and punctuation like ! and . counts too. A name GPT-2 rarely saw, like Priya, gets cut into smaller pieces — "·Pri" + "ya" — and other languages and emoji take even more. (· marks a space, and the small number is each token's ID.)</p>
+      </div>
+      <p data-t="intro_3">This page gives the AI a tiny notepad on purpose — just 30 tokens — so you can watch it fill up and see exactly which message gets rubbed out.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="example_heading">Watch the notepad fill up</h2>
+      <p data-t="example_help">4 messages, one after another, with a notepad of 30 tokens. The bar shows how full it is after each one.</p>
+      <div class="ex" id="example" data-budget="30">
+        <ol class="steps">
+          <li class="step" data-tokens="8" data-used="8">
+            <p class="step-msg"><span class="step-who" data-t="you">You:</span> <q class="msg">Hi! My name is Priya.</q> <span class="step-n">+8 tokens</span></p>
+            <p class="step-used"><progress class="meter" max="30" value="8">8/30</progress> <span>8/30 tokens</span></p>
+          </li>
+          <li class="step" data-tokens="9" data-used="17">
+            <p class="step-msg"><span class="step-who" data-t="you">You:</span> <q class="msg">I live in Hyderabad with my cat.</q> <span class="step-n">+9 tokens</span></p>
+            <p class="step-used"><progress class="meter" max="30" value="17">17/30</progress> <span>17/30 tokens</span></p>
+          </li>
+          <li class="step" data-tokens="9" data-used="26">
+            <p class="step-msg"><span class="step-who" data-t="you">You:</span> <q class="msg">My favourite food is chicken biryani.</q> <span class="step-n">+9 tokens</span></p>
+            <p class="step-used"><progress class="meter" max="30" value="26">26/30</progress> <span>26/30 tokens</span></p>
+          </li>
+          <li class="step" data-tokens="5" data-used="23">
+            <p class="step-msg"><span class="step-who" data-t="you">You:</span> <q class="msg">What is my name?</q> <span class="step-n">+5 tokens</span></p>
+            <p class="step-dropped"><span data-t="rubbed_out">✗ Rubbed out:</span> <q class="msg">Hi! My name is Priya.</q> <span class="step-n">(8 tokens)</span></p>
+            <p class="step-used"><progress class="meter" max="30" value="23">23/30</progress> <span>23/30 tokens</span></p>
+          </li>
+        </ol>
+        <p class="side-head" data-t="still_head">What the AI can still see now:</p>
+        <ul class="still" id="example-still">
+            <li><q class="msg">I live in Hyderabad with my cat.</q> <span class="step-n">(9 tokens)</span></li>
+            <li><q class="msg">My favourite food is chicken biryani.</q> <span class="step-n">(9 tokens)</span></li>
+            <li><q class="msg">What is my name?</q> <span class="step-n">(5 tokens)</span></li>
+        </ul>
+        <p class="muted tok-note"><span data-t="count_pointer">How is a number like "+8 tokens" worked out?</span> <a class="inline-link" href="#counting" data-t="count_link">See how tokens are counted, at the top.</a></p>
+        <p class="ex-why missed" data-t="example_why">❌ At the very moment you ask "What is my name?", the message with your name is the one that falls off. The AI isn't being rude — it simply can't see that message any more.</p>
+      </div>
+      <p class="lesson" data-t="example_lesson">The lesson: an AI only remembers what still fits in its context window — always losing the oldest part first. Today's AIs have huge notepads, hundreds of thousands of tokens, so this happens much later. But it still happens in very long chats, which is why an AI can lose track of something you said early on.</p>
+      <p id="examples-live" class="muted" role="status" data-ok="✓ This example was just checked live against the real demo code, in your browser." data-bad="⚠ This example no longer matches the demo code — the steps need updating."></p>
+    </section>
+
+    <section class="card">
+      <h2 data-t="try_heading">Try it yourself</h2>
+      <p data-t="try_help">Send messages and watch the notepad. Tap one of the messages below to send it, or type your own and press Enter. Want a bigger notepad? Change its size — that starts a new chat.</p>
+      <p id="status" class="muted" role="status" aria-live="polite"
+         data-loading="Getting the notepad ready in your browser… (a one-time download of about 15 MB — after that it's quick)"
+         data-failed="Sorry — the notepad couldn't load in this browser. Check your internet connection and refresh the page, or try the terminal version on GitHub.">Getting the notepad ready in your browser…</p>
+      <noscript><p class="warning">This part needs JavaScript switched on in your browser. The example above works without it.</p></noscript>
+      <p class="option-row">
+        <label class="try-label" for="budget" data-t="budget_label">Notepad size:</label>
+        <select id="budget" disabled>
+          <option value="10">10 tokens</option>
+          <option value="20">20 tokens</option>
+          <option value="30" selected>30 tokens</option>
+          <option value="50">50 tokens</option>
+          <option value="100">100 tokens</option>
+        </select>
+        <button id="restart" class="chip-btn" type="button" disabled data-t="restart">Start over</button>
+      </p>
+      <div class="chips" id="chips">
+        <button type="button" class="chip-btn" disabled data-try="Hi! My name is Priya.">Hi! My name is Priya.</button>
+        <button type="button" class="chip-btn" disabled data-try="I live in Hyderabad with my cat.">I live in Hyderabad with my cat.</button>
+        <button type="button" class="chip-btn" disabled data-try="My favourite food is chicken biryani.">My favourite food is chicken biryani.</button>
+        <button type="button" class="chip-btn" disabled data-try="What is my name?">What is my name?</button>
+        <button type="button" class="chip-btn" disabled data-try="Please remember this whole shopping list: milk, eggs, bread, rice, onions, tomatoes, lentils, yoghurt, mangoes and a big bag of chillies.">Please remember this whole shopping list: milk, eggs, bread, rice, onions, tomatoes, lentils, yoghurt, mangoes and a big bag of chillies.</button>
+      </div>
+      <label class="try-label" for="try" data-t="try_label">Your message:</label>
+      <div class="send-row">
+        <input id="try" type="text" disabled spellcheck="false" autocomplete="off" placeholder="Type a message and press Enter">
+        <button id="send" class="btn" type="button" disabled data-t="send">Send</button>
+      </div>
+      <div id="notepad" aria-live="polite"
+           data-added="+{n} tokens"
+           data-added-one="+1 token"
+           data-tokens="({n} tokens)"
+           data-tokens-one="(1 token)"
+           data-used="{used}/{budget} tokens — {count} message(s) remembered"
+           data-rubbed="✗ Rubbed out to make room:"
+           data-toobig="This one message is {n} tokens — bigger than the whole {budget}-token notepad, so it can't fit at all. It was skipped, and your earlier messages are still safe. Try a bigger notepad."
+           data-pieces="Your message, cut into tokens:"
+           data-still="What the AI can still see:"
+           data-gone="Already forgotten:"
+           data-empty="The notepad is empty. Send a message!"></div>
+    </section>
+
+    <section class="card links">
+      <p class="muted" data-t="private_note">Everything on this page runs inside your own browser. Nothing is sent anywhere, and nothing is saved. This page never talks to an AI — it only counts tokens with GPT-2's list of tokens, and follows the demo's forgetting rule.</p>
+      <p class="muted" data-t="code_note">Curious how it works? The Python code behind this page is on GitHub, where you can run the same notepad in a terminal.</p>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/05-context-window" rel="noopener noreferrer" data-t="code_link">See the code on GitHub</a>
+      <a class="link-card" href="https://github.com/khadir-syed/k_ai-basics/tree/main/05-context-window#how-to-run-it-step-by-step" rel="noopener noreferrer" data-t="terminal_link">Run it in a terminal instead</a>
+    </section>
+
+    <footer class="footer" data-t="footer">Learning should not stop.</footer>
+  </main>
+</body>
+</html>

@@ -33,7 +33,7 @@ in plain text on your screen — no theory slides, no black box.
 It is **not** a framework you build on top of, and it is **not**
 production code. There is no LangChain, no CrewAI, no Docker, and no
 server of ours. Every demo runs on your own computer and does one thing
-clearly — in a terminal, or in your browser for the demos that have a
+clearly — in a terminal, or in your browser with its
 [web version](web/), which GitHub Pages hands to your browser as plain
 files.
 
@@ -54,12 +54,13 @@ files.
 
 ### 🌐 No terminal? Try it in your browser
 
-Not a coder? **Demos 02, 03, 04, 06, 07, 08, 09 and 10 run right in your
-web browser** — nothing to install, and they work on a phone:
+Not a coder? **All 10 demos run right in your web browser** — nothing to
+install, and they work on a phone:
 **https://khadir-syed.github.io/k_ai-basics/web/**
 
 It runs the very same Python code as the terminal version, inside your own
-browser. Nothing you type is sent anywhere. More demos will follow.
+browser. Nothing you type is sent anywhere. Where a demo needs a real AI or
+a big model, the page shows answers saved from a real run, with the date.
 
 ## Which one should I run first?
 
